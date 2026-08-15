@@ -1026,7 +1026,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.WaveInfoText
   dayNightCycle: {fileID: 849873141}
-  dinosaurSpawner: {fileID: 985649089}
   textLabel: {fileID: 1457114565}
 --- !u!1 &850832116
 GameObject:
