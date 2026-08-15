@@ -1,0 +1,10 @@
+{
+  "name": "MicroJam.Game.PlayModeTests",
+  "rootNamespace": "MicroJam.Game.Tests",
+  "references": [
+    "MicroJam.Game"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

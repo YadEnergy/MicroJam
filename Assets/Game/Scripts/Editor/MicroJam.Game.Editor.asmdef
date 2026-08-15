@@ -1,0 +1,10 @@
+{
+  "name": "MicroJam.Game.Editor",
+  "rootNamespace": "MicroJam.Game.Editor",
+  "references": [
+    "MicroJam.Game"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ]
+}
