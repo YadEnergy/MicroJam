@@ -10,9 +10,11 @@ namespace MicroJam.Game
 
         private bool isDay;
         private float dayEndsAt;
+        private int currentDayNumber;
 
         public bool IsDay => isDay;
         public float DaySecondsRemaining => isDay ? Mathf.Max(0f, dayEndsAt - Time.time) : 0f;
+        public int CurrentDayNumber => currentDayNumber;
 
         private void Awake()
         {
@@ -35,6 +37,7 @@ namespace MicroJam.Game
         {
             while (enabled)
             {
+                currentDayNumber++;
                 isDay = true;
                 dayEndsAt = Time.time + dayDuration;
                 Debug.Log($"Day started. Night begins in {dayDuration:0.#} seconds.", this);
