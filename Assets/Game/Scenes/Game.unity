@@ -5291,6 +5291,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3000000031}
+  - component: {fileID: 3000000056}
   m_Layer: 5
   m_Name: BuildHotbarHints
   m_TagString: Untagged
@@ -5320,6 +5321,24 @@ RectTransform:
   m_AnchoredPosition: {x: -24, y: 24}
   m_SizeDelta: {x: 234, y: 104}
   m_Pivot: {x: 1, y: 0}
+--- !u!114 &3000000056
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3000000030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72e51cc9587745cfab0e38da4d3bf0ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.BuildHotbarHintsUI
+  buildingSystem: {fileID: 634560422}
+  wallSlot: {fileID: 3000000034}
+  doorSlot: {fileID: 3000000042}
+  turretSlot: {fileID: 3000000050}
+  selectedColor: {r: 1, g: 0.72, b: 0.2, a: 1}
+  selectedScale: 1.1
 --- !u!1 &3000000032
 GameObject:
   m_ObjectHideFlags: 0
