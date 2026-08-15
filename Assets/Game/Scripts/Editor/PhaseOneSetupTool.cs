@@ -45,6 +45,7 @@ namespace MicroJam.Game.Editor
             GameRoot + "/Scripts/Editor",
             GameRoot + "/ScriptableObjects",
             GameRoot + "/ScriptableObjects/Dinosaurs",
+            GameRoot + "/ScriptableObjects/Settings",
             GameRoot + "/ScriptableObjects/Waves",
             GameRoot + "/Settings"
         };
@@ -66,6 +67,7 @@ namespace MicroJam.Game.Editor
             CreateResourcePrefab(TreePrefabPath, "Tree", new Color(0.12f, 0.55f, 0.16f), circle);
             CreateResourcePrefab(RockPrefabPath, "Rock", new Color(0.48f, 0.52f, 0.58f), circle);
             CreateResourcePrefab(BushPrefabPath, "Bush", new Color(0.25f, 0.75f, 0.28f), circle);
+            PhaseTwoSetupTool.ApplyHealthFoundation(false);
             CreateGameScene(config, square);
             ConfigureBuildSettings();
 
@@ -78,6 +80,7 @@ namespace MicroJam.Game.Editor
         {
             BuildFoundation();
             PhaseOneValidator.ValidateFromBatch();
+            PhaseTwoValidator.ValidateFromBatch();
         }
 
         private static void EnsureFolders()
