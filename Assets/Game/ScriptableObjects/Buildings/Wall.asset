@@ -20,3 +20,4 @@ MonoBehaviour:
   blocksPlayer: 1
   blocksDinosaur: 1
   placeholderColor: {r: 0.35, g: 0.38, b: 0.42, a: 1}
+  removalRefundPercent: 0.5

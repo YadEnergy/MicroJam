@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2896320778189713422}
   - component: {fileID: 1324330956887552154}
   - component: {fileID: 4710433558160427996}
+  - component: {fileID: 1715901146345831222}
   m_Layer: 8
   m_Name: Wall
   m_TagString: Untagged
@@ -106,7 +107,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f1d3815bc1e50e84090e5dd0b62edc84, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.Health
   maxHealth: 150
   currentHealth: 150
@@ -127,6 +128,21 @@ MonoBehaviour:
   health: {fileID: 1324330956887552154}
   footprint: {fileID: 1498582439262914097}
   occupiedCells: []
+--- !u!114 &1715901146345831222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1357695580242240932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 985bc926695142942a7fd128fc527889, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.BuildingRegeneration
+  health: {fileID: 1324330956887552154}
+  regenerationDelay: 10
+  regenerationPerSecond: 10
 --- !u!1 &3251072051681384267
 GameObject:
   m_ObjectHideFlags: 0
@@ -294,7 +310,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5c3a43fd46a75cb45a855d449cfde358, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.HealthBar
   observedHealth: {fileID: 1324330956887552154}
   settings: {fileID: 11400000, guid: d4eb3605ff570d3409aa6cab1ff8c60a, type: 2}

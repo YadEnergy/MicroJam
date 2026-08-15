@@ -75,6 +75,7 @@ namespace MicroJam.Game.Editor
             PhaseThreeSetupTool.ApplyPlayerGameplayFoundation(false);
             PhaseFourSetupTool.ApplyResourceSystem(false);
             PhaseFiveSetupTool.ApplyBuildingSystem(false);
+            PhaseSixSetupTool.ApplyInteractionAndRepair(false);
             ConfigureBuildSettings();
 
             AssetDatabase.SaveAssets();
@@ -90,6 +91,7 @@ namespace MicroJam.Game.Editor
             PhaseThreeValidator.ValidateFromBatch();
             PhaseFourValidator.ValidateFromBatch();
             PhaseFiveValidator.ValidateFromBatch();
+            PhaseSixValidator.ValidateFromBatch();
         }
 
         private static void EnsureFolders()

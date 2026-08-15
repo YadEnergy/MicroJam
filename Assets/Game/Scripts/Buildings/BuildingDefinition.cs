@@ -19,6 +19,7 @@ namespace MicroJam.Game
         [SerializeField] private bool blocksPlayer = true;
         [SerializeField] private bool blocksDinosaur = true;
         [SerializeField] private Color placeholderColor = Color.white;
+        [SerializeField, Range(0f, 1f)] private float removalRefundPercent = 0.5f;
 
         public BuildingType BuildingType => buildingType;
         public string DisplayName => displayName;
@@ -28,6 +29,8 @@ namespace MicroJam.Game
         public bool BlocksPlayer => blocksPlayer;
         public bool BlocksDinosaur => blocksDinosaur;
         public Color PlaceholderColor => placeholderColor;
+        public float RemovalRefundPercent => removalRefundPercent;
+        public int RemovalRefundWood => Mathf.CeilToInt(woodCost * removalRefundPercent);
 
         public void Configure(
             BuildingType configuredType,
@@ -37,7 +40,8 @@ namespace MicroJam.Game
             Vector2Int configuredFootprint,
             bool configuredBlocksPlayer,
             bool configuredBlocksDinosaur,
-            Color configuredPlaceholderColor)
+            Color configuredPlaceholderColor,
+            float configuredRemovalRefundPercent = 0.5f)
         {
             buildingType = configuredType;
             displayName = string.IsNullOrWhiteSpace(configuredName) ? configuredType.ToString() : configuredName;
@@ -47,12 +51,14 @@ namespace MicroJam.Game
             blocksPlayer = configuredBlocksPlayer;
             blocksDinosaur = configuredBlocksDinosaur;
             placeholderColor = configuredPlaceholderColor;
+            removalRefundPercent = Mathf.Clamp01(configuredRemovalRefundPercent);
         }
 
         private void OnValidate()
         {
             woodCost = Mathf.Max(0, woodCost);
             footprintSize = new Vector2Int(Mathf.Max(1, footprintSize.x), Mathf.Max(1, footprintSize.y));
+            removalRefundPercent = Mathf.Clamp01(removalRefundPercent);
             if (string.IsNullOrWhiteSpace(displayName))
             {
                 displayName = buildingType.ToString();
