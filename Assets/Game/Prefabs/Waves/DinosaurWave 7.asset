@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3333333333333333333333333333333, type: 3}
+  m_Name: DinosaurWave 7
+  m_EditorClassIdentifier: MicroJam.Game:MicroJam.Game:DinosaurWave
+  coinBank: 40
+  spawnInterval: 0.75
+  allowedDinosaurs:
+  - {fileID: 3988364512398765412, guid: de8bace565788c745920765805a67b8f, type: 3}
+  - {fileID: 3988364512398765412, guid: 9acc5dd5126a86d428cf13667eb937a9, type: 3}
+  - {fileID: 3988364512398765412, guid: 278a353183a96f94fa0f719647406e13, type: 3}

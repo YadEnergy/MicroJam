@@ -103,7 +103,7 @@ GameObject:
   - component: {fileID: 6427668064632688652}
   - component: {fileID: 1913020764131735107}
   - component: {fileID: 4349097148670265896}
-  - component: {fileID: 3423965090436637903}
+  - component: {fileID: 7184326689371581074}
   m_Layer: 8
   m_Name: Campfire
   m_TagString: Untagged
@@ -138,7 +138,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8de77431ffd0be469e3ed4aad4d2aed, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.GridFootprint
   sizeInCells: {x: 3, y: 3}
 --- !u!61 &1913020764131735107
@@ -197,12 +197,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f1d3815bc1e50e84090e5dd0b62edc84, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.Health
   maxHealth: 500
   currentHealth: 500
   initializeAtMaxOnAwake: 1
---- !u!114 &3423965090436637903
+--- !u!114 &7184326689371581074
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -211,12 +211,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1173618637283117086}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 665445aef0eb01240bb72244c7c3d798, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.CampfireInteraction
-  health: {fileID: 4349097148670265896}
-  repairWoodCost: 20
-  repairHealthPercent: 0.1
+  m_Script: {fileID: 11500000, guid: eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.CampfireDestroyedEventRelay
 --- !u!1 &1342922911327894189
 GameObject:
   m_ObjectHideFlags: 0
@@ -294,7 +291,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5c3a43fd46a75cb45a855d449cfde358, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.HealthBar
   observedHealth: {fileID: 4349097148670265896}
   settings: {fileID: 11400000, guid: d4eb3605ff570d3409aa6cab1ff8c60a, type: 2}
