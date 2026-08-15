@@ -67,7 +67,16 @@ namespace MicroJam.Game
             }
         }
 
-        private void OnDied(DeathEvent _) => Destroy(gameObject);
+        private void OnDied(DeathEvent death)
+        {
+            bool wasKilledByPlayer = death.Source != null && death.Source.GetComponent<PlayerCombat>() != null;
+            if (wasKilledByPlayer)
+            {
+                PlayerPoints.Add(spawnCost * 5);
+            }
+
+            Destroy(gameObject);
+        }
 
         private void OnValidate()
         {
