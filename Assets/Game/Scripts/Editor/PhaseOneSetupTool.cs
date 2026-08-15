@@ -42,9 +42,11 @@ namespace MicroJam.Game.Editor
             GameRoot + "/Scenes",
             GameRoot + "/Scripts",
             GameRoot + "/Scripts/Core",
+            GameRoot + "/Scripts/Buildings",
             GameRoot + "/Scripts/Resources",
             GameRoot + "/Scripts/Editor",
             GameRoot + "/ScriptableObjects",
+            GameRoot + "/ScriptableObjects/Buildings",
             GameRoot + "/ScriptableObjects/Dinosaurs",
             GameRoot + "/ScriptableObjects/Settings",
             GameRoot + "/ScriptableObjects/Waves",
@@ -72,6 +74,7 @@ namespace MicroJam.Game.Editor
             CreateGameScene(config, square);
             PhaseThreeSetupTool.ApplyPlayerGameplayFoundation(false);
             PhaseFourSetupTool.ApplyResourceSystem(false);
+            PhaseFiveSetupTool.ApplyBuildingSystem(false);
             ConfigureBuildSettings();
 
             AssetDatabase.SaveAssets();
@@ -86,6 +89,7 @@ namespace MicroJam.Game.Editor
             PhaseTwoValidator.ValidateFromBatch();
             PhaseThreeValidator.ValidateFromBatch();
             PhaseFourValidator.ValidateFromBatch();
+            PhaseFiveValidator.ValidateFromBatch();
         }
 
         private static void EnsureFolders()

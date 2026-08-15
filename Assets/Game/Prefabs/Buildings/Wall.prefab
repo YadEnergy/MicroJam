@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1498582439262914097}
   - component: {fileID: 2896320778189713422}
   - component: {fileID: 1324330956887552154}
+  - component: {fileID: 4710433558160427996}
   m_Layer: 8
   m_Name: Wall
   m_TagString: Untagged
@@ -46,7 +47,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8de77431ffd0be469e3ed4aad4d2aed, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.GridFootprint
   sizeInCells: {x: 1, y: 1}
 --- !u!61 &2896320778189713422
@@ -110,6 +111,22 @@ MonoBehaviour:
   maxHealth: 150
   currentHealth: 150
   initializeAtMaxOnAwake: 1
+--- !u!114 &4710433558160427996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1357695580242240932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5c2342cc7f53eb469186f482da48f4e, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.BuildingInstance
+  definition: {fileID: 11400000, guid: c419b1214005fd544b3336ecc9b1c047, type: 2}
+  health: {fileID: 1324330956887552154}
+  footprint: {fileID: 1498582439262914097}
+  occupiedCells: []
 --- !u!1 &3251072051681384267
 GameObject:
   m_ObjectHideFlags: 0
