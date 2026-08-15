@@ -262,7 +262,7 @@ namespace MicroJam.Game
                     break;
                 case Step.SellBuilding:
                     buildingSystem?.CancelBuildMode();
-                    SetMessage("Press the Remove button while hovering over a building to sell it and get some wood back.");
+                    SetMessage("Click a placed wall or door, then press Remove to sell it and get some wood back.");
                     break;
                 case Step.FightDinosaur:
                     dayNightCycle?.StartFirstNightFromTutorial();
