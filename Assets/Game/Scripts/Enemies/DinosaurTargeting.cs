@@ -101,7 +101,16 @@ namespace MicroJam.Game
                 }
             }
 
-            if (playerHealth == null && (currentTarget == null || currentTarget.IsDead || NeedsRepath()))
+            // Once a wall has been selected, keep attacking it until it is destroyed.
+            // Replanning the sealed route every few tenths of a second is both unnecessary
+            // and very expensive when several dinosaurs surround the same base.
+            bool isBreakingSelectedBuilding = State == DinosaurTargetState.BreakingBuilding &&
+                                             currentTarget != null && !currentTarget.IsDead;
+            bool navigationChanged = plannedRevision != navigation.Revision;
+            bool needsCampfireRoute = currentTarget == null || currentTarget.IsDead ||
+                                      (!isBreakingSelectedBuilding && NeedsRepath()) ||
+                                      (isBreakingSelectedBuilding && navigationChanged);
+            if (playerHealth == null && needsCampfireRoute)
             {
                 PlanCampfireRoute();
             }
