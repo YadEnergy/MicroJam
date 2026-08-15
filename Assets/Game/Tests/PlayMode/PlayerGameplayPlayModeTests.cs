@@ -21,6 +21,7 @@ namespace MicroJam.Game.Tests
             PlayerFacing facing = player.GetComponent<PlayerFacing>();
             PlayerCombat combat = player.GetComponent<PlayerCombat>();
             PlayerResourceWallet wallet = player.GetComponent<PlayerResourceWallet>();
+            wallet.Configure(20, 20);
             Health health = player.GetComponent<Health>();
             Rigidbody2D body = player.GetComponent<Rigidbody2D>();
             Assert.That(input, Is.Not.Null);
@@ -106,6 +107,15 @@ namespace MicroJam.Game.Tests
         public IEnumerator MeleeHitsAllFrontTargetsOnceAndRepeatsWhileHeld()
         {
             yield return SceneManager.LoadSceneAsync("Game", LoadSceneMode.Single);
+            yield return null;
+
+            // Isolate the melee geometry from the scene's intentionally randomized resource population.
+            ResourcePopulationManager population = Object.FindFirstObjectByType<ResourcePopulationManager>();
+            if (population != null) population.enabled = false;
+            foreach (ResourceNode node in Object.FindObjectsByType<ResourceNode>(FindObjectsSortMode.None))
+            {
+                Object.Destroy(node.gameObject);
+            }
             yield return null;
 
             GameObject player = GameObject.Find("Game/Actors/Player");

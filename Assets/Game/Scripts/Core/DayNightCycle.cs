@@ -40,13 +40,10 @@ namespace MicroJam.Game
                 currentDayNumber++;
                 isDay = true;
                 dayEndsAt = Time.time + dayDuration;
-                Debug.Log($"Day started. Night begins in {dayDuration:0.#} seconds.", this);
                 yield return new WaitForSeconds(dayDuration);
 
                 isDay = false;
-                Debug.Log("Night started. The next dinosaur wave is spawning.", this);
                 yield return dinosaurSpawner.RunNextWaveAndWaitUntilCleared();
-                Debug.Log("Night ended. All dinosaurs were defeated.", this);
             }
         }
 

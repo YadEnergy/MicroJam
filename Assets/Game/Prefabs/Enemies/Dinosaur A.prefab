@@ -494,7 +494,6 @@ MonoBehaviour:
   movement: {fileID: 5990775089936957884}
   attack: {fileID: 7368752122449935101}
   targeting: {fileID: 4011219103371351612}
-  campfireStoppingDistance: 0.75
   spawnCost: 1
 --- !u!114 &5990775089936957884
 MonoBehaviour:
@@ -511,12 +510,7 @@ MonoBehaviour:
   body: {fileID: 8262594216577977310}
   visual: {fileID: 3759251342161622500}
   moveSpeed: 2.5
-  resourceLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  avoidanceRadius: 0.42
-  avoidanceLookAhead: 1.25
-  avoidanceAngleStep: 35
+  waypointTolerance: 0.08
 --- !u!114 &7368752122449935101
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -534,6 +528,7 @@ MonoBehaviour:
   attackOrigin: {fileID: 8300000000000000002}
   attackFeedback: {fileID: 8300000000000000006}
   attackRange: 1.5
+  rangeTolerance: 0.05
   attackDamage: 8
   attackCooldown: 1
   feedbackDuration: 0.1
@@ -550,6 +545,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.DinosaurTargeting
   health: {fileID: 7955384750737395531}
+  movement: {fileID: 5990775089936957884}
+  attack: {fileID: 7368752122449935101}
+  repathInterval: 0.35
+  playerChaseFailureTimeout: 10
+  showPathGizmos: 0
 --- !u!1 &8300000000000000000
 GameObject:
   m_ObjectHideFlags: 0

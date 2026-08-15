@@ -273,7 +273,26 @@ namespace MicroJam.Game.Editor
 
         private static void ConfigureEventSystem(Transform ui, InputActionAsset input, int layer)
         {
-            GameObject owner = FindOrCreateChild(ui, "EventSystem", layer);
+            EventSystem[] existingSystems = UnityEngine.Object.FindObjectsByType<EventSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            EventSystem selected = ui.Find("EventSystem")?.GetComponent<EventSystem>();
+            if (selected == null && existingSystems.Length > 0)
+            {
+                selected = existingSystems[0];
+                selected.gameObject.name = "EventSystem";
+                selected.transform.SetParent(ui, false);
+            }
+
+            for (int i = 0; i < existingSystems.Length; i++)
+            {
+                if (existingSystems[i] != selected)
+                {
+                    UnityEngine.Object.DestroyImmediate(existingSystems[i].gameObject);
+                }
+            }
+
+            GameObject owner = selected != null ? selected.gameObject : FindOrCreateChild(ui, "EventSystem", layer);
+            owner.layer = layer;
+            ResetTransform(owner.transform);
             GetOrAdd<EventSystem>(owner);
             InputSystemUIInputModule module = GetOrAdd<InputSystemUIInputModule>(owner);
             module.actionsAsset = input;

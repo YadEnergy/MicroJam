@@ -43,6 +43,7 @@ namespace MicroJam.Game.Tests
             PlayerCombat combat = player.GetComponent<PlayerCombat>();
             PlayerFacing facing = player.GetComponent<PlayerFacing>();
             PlayerResourceWallet wallet = player.GetComponent<PlayerResourceWallet>();
+            wallet.Configure(20, 20);
             Health playerHealth = player.GetComponent<Health>();
             Rigidbody2D playerBody = player.GetComponent<Rigidbody2D>();
             input.enabled = false;

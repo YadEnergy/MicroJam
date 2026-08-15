@@ -10,19 +10,30 @@ namespace MicroJam.Game
         [SerializeField] private DinosaurMovement movement;
         [SerializeField] private DinosaurAttack attack;
         [SerializeField] private DinosaurTargeting targeting;
-        [SerializeField, Min(0f)] private float campfireStoppingDistance = 0.75f;
         [SerializeField, Min(1)] private int spawnCost = 3;
 
         public int SpawnCost => spawnCost;
+        public Health Health => health;
+        public DinosaurMovement Movement => movement;
+        public DinosaurAttack Attack => attack;
+        public DinosaurTargeting Targeting => targeting;
 
-        public void Initialize() => targeting?.GetTarget(false);
+        public void Configure(Health configuredHealth, DinosaurMovement configuredMovement, DinosaurAttack configuredAttack, DinosaurTargeting configuredTargeting)
+        {
+            health = configuredHealth;
+            movement = configuredMovement;
+            attack = configuredAttack;
+            targeting = configuredTargeting;
+        }
+
+        public void Initialize() => targeting?.Initialize();
 
         private void Awake()
         {
             health ??= GetComponent<Health>();
-            movement ??= GetComponent<DinosaurMovement>() ?? gameObject.AddComponent<DinosaurMovement>();
-            attack ??= GetComponent<DinosaurAttack>() ?? gameObject.AddComponent<DinosaurAttack>();
-            targeting ??= GetComponent<DinosaurTargeting>() ?? gameObject.AddComponent<DinosaurTargeting>();
+            movement ??= GetComponent<DinosaurMovement>();
+            attack ??= GetComponent<DinosaurAttack>();
+            targeting ??= GetComponent<DinosaurTargeting>();
             IgnoreWorldBoundaryCollision();
         }
 
@@ -38,50 +49,24 @@ namespace MicroJam.Game
 
         private void FixedUpdate()
         {
-            if (health == null || health.IsDead || movement == null || attack == null || targeting == null) return;
-
-            Health retaliatingPlayer = targeting.RetaliatingPlayer;
-            bool canCounterAttack = retaliatingPlayer != null && attack.IsWithinRange(retaliatingPlayer);
-            Health target = targeting.GetTarget(canCounterAttack);
-            if (target == null || target.IsDead) return;
-
-            if (attack.IsWithinRange(target))
-            {
-                attack.TryAttack(target);
-                return;
-            }
-
-            float stoppingDistance = target == targeting.CampfireHealth
-                ? campfireStoppingDistance
-                : attack.AttackRange;
-            movement.MoveTowards(target.transform.position, stoppingDistance);
+            if (health == null || health.IsDead) return;
+            targeting?.Tick();
         }
 
         private static void IgnoreWorldBoundaryCollision()
         {
             int dinosaurLayer = GameLayers.DinosaurIndex;
             int boundaryLayer = GameLayers.WorldBoundaryIndex;
-            if (dinosaurLayer >= 0 && boundaryLayer >= 0)
-            {
-                Physics2D.IgnoreLayerCollision(dinosaurLayer, boundaryLayer, true);
-            }
+            if (dinosaurLayer >= 0 && boundaryLayer >= 0) Physics2D.IgnoreLayerCollision(dinosaurLayer, boundaryLayer, true);
         }
 
         private void OnDied(DeathEvent death)
         {
-            bool wasKilledByPlayer = death.Source != null && death.Source.GetComponent<PlayerCombat>() != null;
-            if (wasKilledByPlayer)
-            {
-                PlayerPoints.Add(spawnCost * 5);
-            }
-
+            bool wasKilledByPlayer = death.Source != null && death.Source.GetComponentInParent<PlayerCombat>() != null;
+            if (wasKilledByPlayer) PlayerPoints.Add(spawnCost * 5);
             Destroy(gameObject);
         }
 
-        private void OnValidate()
-        {
-            campfireStoppingDistance = Mathf.Max(0f, campfireStoppingDistance);
-            spawnCost = Mathf.Max(1, spawnCost);
-        }
+        private void OnValidate() => spawnCost = Mathf.Max(1, spawnCost);
     }
 }

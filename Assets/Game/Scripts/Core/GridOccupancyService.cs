@@ -1,23 +1,43 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace MicroJam.Game
 {
+    public readonly struct GridOccupancyChangedEvent
+    {
+        public GridOccupancyChangedEvent(UnityEngine.Object occupant, Vector2Int[] cells, bool occupied, int revision)
+        {
+            Occupant = occupant;
+            Cells = cells;
+            Occupied = occupied;
+            Revision = revision;
+        }
+
+        public UnityEngine.Object Occupant { get; }
+        public Vector2Int[] Cells { get; }
+        public bool Occupied { get; }
+        public int Revision { get; }
+    }
+
     public sealed class GridOccupancyService : MonoBehaviour
     {
         [SerializeField] private WorldGridService worldGrid;
 
-        private readonly Dictionary<Vector2Int, Object> occupantsByCell = new();
-        private readonly Dictionary<Object, HashSet<Vector2Int>> cellsByOccupant = new();
+        private readonly Dictionary<Vector2Int, UnityEngine.Object> occupantsByCell = new();
+        private readonly Dictionary<UnityEngine.Object, HashSet<Vector2Int>> cellsByOccupant = new();
 
         public WorldGridService WorldGrid => worldGrid;
         public int OccupiedCellCount => occupantsByCell.Count;
+        public int Revision { get; private set; }
+
+        public event Action<GridOccupancyChangedEvent> OccupancyChanged;
 
         public void Configure(WorldGridService configuredWorldGrid) => worldGrid = configuredWorldGrid;
 
         public bool IsCellOccupied(Vector2Int cell)
         {
-            if (!occupantsByCell.TryGetValue(cell, out Object occupant))
+            if (!occupantsByCell.TryGetValue(cell, out UnityEngine.Object occupant))
             {
                 return false;
             }
@@ -31,7 +51,7 @@ namespace MicroJam.Game
             return false;
         }
 
-        public bool TryGetOccupant(Vector2Int cell, out Object occupant)
+        public bool TryGetOccupant(Vector2Int cell, out UnityEngine.Object occupant)
         {
             if (IsCellOccupied(cell))
             {
@@ -43,7 +63,7 @@ namespace MicroJam.Game
             return false;
         }
 
-        public bool TryRegister(Object occupant, Vector2Int cell)
+        public bool TryRegister(UnityEngine.Object occupant, Vector2Int cell)
         {
             if (occupant == null || worldGrid == null || worldGrid.Config == null ||
                 !worldGrid.Config.IsCellInsidePlayableArea(cell) || IsCellOccupied(cell))
@@ -59,10 +79,11 @@ namespace MicroJam.Game
             }
 
             cells.Add(cell);
+            RaiseChanged(occupant, new[] { cell }, true);
             return true;
         }
 
-        public bool TryRegister(Object occupant, IEnumerable<Vector2Int> cells)
+        public bool TryRegister(UnityEngine.Object occupant, IEnumerable<Vector2Int> cells)
         {
             if (occupant == null || cells == null)
             {
@@ -92,25 +113,29 @@ namespace MicroJam.Game
             }
 
             cellsByOccupant[occupant] = new HashSet<Vector2Int>(requested);
+            RaiseChanged(occupant, requested.ToArray(), true);
             return true;
         }
 
-        public bool Unregister(Object occupant)
+        public bool Unregister(UnityEngine.Object occupant)
         {
             if (occupant == null || !cellsByOccupant.TryGetValue(occupant, out HashSet<Vector2Int> cells))
             {
                 return false;
             }
 
+            Vector2Int[] releasedCells = new Vector2Int[cells.Count];
+            cells.CopyTo(releasedCells);
             foreach (Vector2Int cell in cells)
             {
-                if (occupantsByCell.TryGetValue(cell, out Object registered) && registered == occupant)
+                if (occupantsByCell.TryGetValue(cell, out UnityEngine.Object registered) && registered == occupant)
                 {
                     occupantsByCell.Remove(cell);
                 }
             }
 
             cellsByOccupant.Remove(occupant);
+            RaiseChanged(occupant, releasedCells, false);
             return true;
         }
 
@@ -136,6 +161,12 @@ namespace MicroJam.Game
             {
                 Debug.LogError("GridOccupancyService requires a scene-bound WorldGridService reference.", this);
             }
+        }
+
+        private void RaiseChanged(UnityEngine.Object occupant, Vector2Int[] cells, bool occupied)
+        {
+            Revision++;
+            OccupancyChanged?.Invoke(new GridOccupancyChangedEvent(occupant, cells, occupied, Revision));
         }
     }
 }

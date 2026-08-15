@@ -104,6 +104,7 @@ GameObject:
   - component: {fileID: 1913020764131735107}
   - component: {fileID: 4349097148670265896}
   - component: {fileID: 7184326689371581074}
+  - component: {fileID: 255211313223618543}
   m_Layer: 8
   m_Name: Campfire
   m_TagString: Untagged
@@ -214,6 +215,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.CampfireDestroyedEventRelay
+--- !u!114 &255211313223618543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1173618637283117086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 665445aef0eb01240bb72244c7c3d798, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.CampfireInteraction
+  health: {fileID: 4349097148670265896}
+  repairWoodCost: 20
+  repairHealthPercent: 0.1
 --- !u!1 &1342922911327894189
 GameObject:
   m_ObjectHideFlags: 0

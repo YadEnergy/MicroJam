@@ -212,6 +212,7 @@ namespace MicroJam.Game.Tests
         {
             yield return SceneManager.LoadSceneAsync("Game", LoadSceneMode.Single);
             yield return null;
+            UnityEngine.Object.FindFirstObjectByType<PlayerResourceWallet>()?.Configure(20, 20);
             Physics2D.SyncTransforms();
         }
 

@@ -405,7 +405,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eb34fceafe1bc344b60c83f4fd7d8b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.PlayerResourceWallet
-  startingWood: 20
+  startingWood: 500
   startingStone: 20
   initializeOnAwake: 1
   wood: 20
