@@ -316,6 +316,7 @@ GameObject:
   - component: {fileID: 793517697163212040}
   - component: {fileID: 8848062239888855888}
   - component: {fileID: 9119905879317573594}
+  - component: {fileID: 3839749693550087077}
   m_Layer: 9
   m_Name: Bush
   m_TagString: Untagged
@@ -391,6 +392,22 @@ MonoBehaviour:
   maxHealth: 50
   currentHealth: 50
   initializeAtMaxOnAwake: 1
+--- !u!114 &3839749693550087077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8571565702423516438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f13de43e550ccf146a62c7cf9a95b2ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.ResourceNode
+  nodeType: 2
+  health: {fileID: 9119905879317573594}
+  resourcePerSuccessfulHit: 1
+  healPercentPerSuccessfulHit: 0.1
 --- !u!1 &9163292338808782313
 GameObject:
   m_ObjectHideFlags: 0

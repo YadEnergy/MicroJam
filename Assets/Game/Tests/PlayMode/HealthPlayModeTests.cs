@@ -15,7 +15,10 @@ namespace MicroJam.Game.Tests
             yield return null;
 
             Health[] persistentHealth = Object.FindObjectsByType<Health>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-            Assert.That(persistentHealth.Length, Is.EqualTo(2), "Only scene-bound Player and Campfire should exist before dynamic spawning.");
+            ResourceNode[] managedResources = Object.FindObjectsByType<ResourceNode>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            Assert.That(managedResources.Length, Is.EqualTo(30), "ResourcePopulationManager should own the default runtime population.");
+            Assert.That(persistentHealth.Length, Is.EqualTo(2 + managedResources.Length),
+                "Health owners should be the scene-bound Player/Campfire plus managed resource prefab instances.");
 
             GameObject game = GameObject.Find("Game");
             Health scenePlayer = game.transform.Find("Actors/Player").GetComponent<Health>();
@@ -97,8 +100,9 @@ namespace MicroJam.Game.Tests
             VerifyIndependentShowAfterDamageEntities(scenePlayerBar.Settings);
 
             yield return null;
-            Assert.That(Object.FindObjectsByType<Health>(FindObjectsInactive.Include, FindObjectsSortMode.None).Length, Is.EqualTo(2),
-                "Temporary test instances must clean up without duplicating persistent scene objects.");
+            int activeResourceHealth = Object.FindObjectsByType<ResourceNode>(FindObjectsInactive.Include, FindObjectsSortMode.None).Length;
+            Assert.That(Object.FindObjectsByType<Health>(FindObjectsInactive.Include, FindObjectsSortMode.None).Length, Is.EqualTo(2 + activeResourceHealth),
+                "Temporary test instances must clean up without duplicating persistent or managed resource Health owners.");
             LogAssert.NoUnexpectedReceived();
         }
 

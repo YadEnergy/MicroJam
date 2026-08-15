@@ -69,6 +69,13 @@ namespace MicroJam.Game
             }
         }
 
+        public void ResetForSpawn()
+        {
+            visibleUntilTime = 0f;
+            ApplyVisualState();
+            SetVisible(visibilityMode == HealthBarVisibilityMode.AlwaysVisible);
+        }
+
         private void Awake()
         {
             ApplyVisualState();

@@ -156,6 +156,7 @@ GameObject:
   - component: {fileID: 5364057255428791353}
   - component: {fileID: 2724851781123998630}
   - component: {fileID: 5241006951298520275}
+  - component: {fileID: 3124992359798026005}
   m_Layer: 9
   m_Name: Rock
   m_TagString: Untagged
@@ -231,6 +232,22 @@ MonoBehaviour:
   maxHealth: 50
   currentHealth: 50
   initializeAtMaxOnAwake: 1
+--- !u!114 &3124992359798026005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4467319346833168321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f13de43e550ccf146a62c7cf9a95b2ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.ResourceNode
+  nodeType: 1
+  health: {fileID: 5241006951298520275}
+  resourcePerSuccessfulHit: 1
+  healPercentPerSuccessfulHit: 0.1
 --- !u!1 &4786361183661297411
 GameObject:
   m_ObjectHideFlags: 0

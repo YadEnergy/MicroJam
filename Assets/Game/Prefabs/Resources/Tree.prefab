@@ -225,6 +225,7 @@ GameObject:
   - component: {fileID: 3476660969845103553}
   - component: {fileID: 452549991428283944}
   - component: {fileID: 2339087995835206355}
+  - component: {fileID: 5105284517828571016}
   m_Layer: 9
   m_Name: Tree
   m_TagString: Untagged
@@ -300,6 +301,22 @@ MonoBehaviour:
   maxHealth: 50
   currentHealth: 50
   initializeAtMaxOnAwake: 1
+--- !u!114 &5105284517828571016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6347775803902634627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f13de43e550ccf146a62c7cf9a95b2ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.ResourceNode
+  nodeType: 0
+  health: {fileID: 2339087995835206355}
+  resourcePerSuccessfulHit: 1
+  healPercentPerSuccessfulHit: 0.1
 --- !u!1 &7516159378105911008
 GameObject:
   m_ObjectHideFlags: 0
