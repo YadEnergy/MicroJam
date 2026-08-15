@@ -3,6 +3,7 @@
   "rootNamespace": "MicroJam.Game",
   "references": [
     "Unity.InputSystem",
-    "Unity.TextMeshPro"
+    "Unity.TextMeshPro",
+    "UnityEngine.UI"
   ]
 }
