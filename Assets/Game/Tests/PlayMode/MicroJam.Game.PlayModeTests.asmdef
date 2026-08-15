@@ -2,7 +2,8 @@
   "name": "MicroJam.Game.PlayModeTests",
   "rootNamespace": "MicroJam.Game.Tests",
   "references": [
-    "MicroJam.Game"
+    "MicroJam.Game",
+    "Unity.InputSystem"
   ],
   "optionalUnityReferences": [
     "TestAssemblies"

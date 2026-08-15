@@ -69,6 +69,7 @@ namespace MicroJam.Game.Editor
             CreateResourcePrefab(BushPrefabPath, "Bush", new Color(0.25f, 0.75f, 0.28f), circle);
             PhaseTwoSetupTool.ApplyHealthFoundation(false);
             CreateGameScene(config, square);
+            PhaseThreeSetupTool.ApplyPlayerGameplayFoundation(false);
             ConfigureBuildSettings();
 
             AssetDatabase.SaveAssets();
@@ -81,6 +82,7 @@ namespace MicroJam.Game.Editor
             BuildFoundation();
             PhaseOneValidator.ValidateFromBatch();
             PhaseTwoValidator.ValidateFromBatch();
+            PhaseThreeValidator.ValidateFromBatch();
         }
 
         private static void EnsureFolders()

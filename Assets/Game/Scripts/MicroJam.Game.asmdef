@@ -1,4 +1,7 @@
 {
   "name": "MicroJam.Game",
-  "rootNamespace": "MicroJam.Game"
+  "rootNamespace": "MicroJam.Game",
+  "references": [
+    "Unity.InputSystem"
+  ]
 }
