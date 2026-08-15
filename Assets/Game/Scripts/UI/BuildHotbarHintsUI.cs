@@ -15,6 +15,7 @@ namespace MicroJam.Game
         private static readonly Color WallColor = new(0.42f, 0.22f, 0.08f, 1f);
         private static readonly Color DoorColor = new(0.24f, 0.43f, 0.55f, 1f);
         private static readonly Color TurretColor = new(0.28f, 0.3f, 0.36f, 1f);
+        private BuildSelection tutorialHighlight;
 
         private void Awake()
         {
@@ -41,9 +42,17 @@ namespace MicroJam.Game
 
         private void Refresh(BuildSelection selection)
         {
-            SetSlot(wallSlot, selection == BuildSelection.Wall, WallColor);
-            SetSlot(doorSlot, selection == BuildSelection.Door, DoorColor);
+            BuildSelection displayedSelection = tutorialHighlight != BuildSelection.None ? tutorialHighlight : selection;
+            SetSlot(wallSlot, displayedSelection == BuildSelection.Wall, WallColor);
+            SetSlot(doorSlot, displayedSelection == BuildSelection.Door, DoorColor);
             SetSlot(turretSlot, false, TurretColor);
+        }
+
+        /// <summary>Draws attention to a build slot while the tutorial is teaching it.</summary>
+        public void SetTutorialHighlight(BuildSelection selection)
+        {
+            tutorialHighlight = selection;
+            Refresh(buildingSystem != null ? buildingSystem.Selection : BuildSelection.None);
         }
 
         private void SetSlot(Image slot, bool selected, Color normalColor)

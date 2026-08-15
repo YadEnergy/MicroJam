@@ -21,9 +21,11 @@ namespace MicroJam.Game
                 return;
             }
 
-            textLabel.text = dayNightCycle.IsDay
-                ? $"Day: {Mathf.CeilToInt(dayNightCycle.DaySecondsRemaining)} sec"
-                : "Night";
+            textLabel.text = !dayNightCycle.IsDay
+                ? "Night"
+                : dayNightCycle.IsDayCountdownActive
+                    ? $"Day: {Mathf.CeilToInt(dayNightCycle.DaySecondsRemaining)} sec"
+                    : "Day 1";
         }
     }
 }
