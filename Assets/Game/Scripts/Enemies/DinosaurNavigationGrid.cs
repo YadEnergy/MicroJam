@@ -175,27 +175,26 @@ namespace MicroJam.Game
         {
             path = null;
             HashSet<Vector2Int> goalSet = new(goals);
-            List<Vector2Int> open = new() { start };
+            List<PathNode> open = new() { new PathNode(start, Heuristic(start, goals)) };
             HashSet<Vector2Int> closed = new();
             Dictionary<Vector2Int, Vector2Int> cameFrom = new();
             Dictionary<Vector2Int, int> gScore = new() { [start] = 0 };
 
             while (open.Count > 0)
             {
-                int bestIndex = 0;
-                int bestScore = int.MaxValue;
-                for (int i = 0; i < open.Count; i++)
+                PathNode node = DequeueLowestPriority(open);
+                Vector2Int current = node.Cell;
+                if (closed.Contains(current))
                 {
-                    int score = gScore[open[i]] + Heuristic(open[i], goals);
-                    if (score < bestScore)
-                    {
-                        bestScore = score;
-                        bestIndex = i;
-                    }
+                    continue;
                 }
 
-                Vector2Int current = open[bestIndex];
-                open.RemoveAt(bestIndex);
+                int expectedPriority = gScore[current] + Heuristic(current, goals);
+                if (node.Priority != expectedPriority)
+                {
+                    continue; // An improved route to this cell was added to the heap.
+                }
+
                 if (goalSet.Contains(current))
                 {
                     path = Reconstruct(cameFrom, current);
@@ -226,14 +225,72 @@ namespace MicroJam.Game
 
                     cameFrom[next] = current;
                     gScore[next] = tentative;
-                    if (!open.Contains(next))
-                    {
-                        open.Add(next);
-                    }
+                    Enqueue(open, new PathNode(next, tentative + Heuristic(next, goals)));
                 }
             }
 
             return false;
+        }
+
+        private static void Enqueue(List<PathNode> heap, PathNode node)
+        {
+            heap.Add(node);
+            int index = heap.Count - 1;
+            while (index > 0)
+            {
+                int parent = (index - 1) / 2;
+                if (Compare(heap[parent], node) <= 0) break;
+
+                heap[index] = heap[parent];
+                index = parent;
+            }
+
+            heap[index] = node;
+        }
+
+        private static PathNode DequeueLowestPriority(List<PathNode> heap)
+        {
+            PathNode result = heap[0];
+            PathNode last = heap[^1];
+            heap.RemoveAt(heap.Count - 1);
+            if (heap.Count == 0) return result;
+
+            int index = 0;
+            while (true)
+            {
+                int left = index * 2 + 1;
+                if (left >= heap.Count) break;
+
+                int right = left + 1;
+                int child = right < heap.Count && Compare(heap[right], heap[left]) < 0 ? right : left;
+                if (Compare(last, heap[child]) <= 0) break;
+
+                heap[index] = heap[child];
+                index = child;
+            }
+
+            heap[index] = last;
+            return result;
+        }
+
+        private static int Compare(PathNode left, PathNode right)
+        {
+            int priority = left.Priority.CompareTo(right.Priority);
+            if (priority != 0) return priority;
+            int x = left.Cell.x.CompareTo(right.Cell.x);
+            return x != 0 ? x : left.Cell.y.CompareTo(right.Cell.y);
+        }
+
+        private readonly struct PathNode
+        {
+            public PathNode(Vector2Int cell, int priority)
+            {
+                Cell = cell;
+                Priority = priority;
+            }
+
+            public Vector2Int Cell { get; }
+            public int Priority { get; }
         }
 
         private BuildingInstance GetBlockingBuilding(Vector2Int cell)
