@@ -398,6 +398,7 @@ GameObject:
   - component: {fileID: 5990775089936957884}
   - component: {fileID: 7368752122449935101}
   - component: {fileID: 4011219103371351612}
+  - component: {fileID: 8399000000000000001}
   m_Layer: 7
   m_Name: Dinosaur Yellow
   m_TagString: Untagged
@@ -577,6 +578,22 @@ MonoBehaviour:
   repathInterval: 0.35
   playerChaseFailureTimeout: 10
   showPathGizmos: 0
+--- !u!114 &8399000000000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6375904000588555647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9999999999999999999999999999999, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.DinosaurAnimationController
+  animator: {fileID: 8976147141184531103}
+  health: {fileID: 7955384750737395531}
+  movement: {fileID: 5990775089936957884}
+  attack: {fileID: 7368752122449935101}
 --- !u!1 &8300000000000000000
 GameObject:
   m_ObjectHideFlags: 0
