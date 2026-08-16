@@ -19,6 +19,7 @@ namespace MicroJam.Game
         private int waypointIndex;
         private float avoidanceSide;
         private float keepAvoidanceSideUntil;
+        private Vector2 facingDirection = Vector2.right;
 
         public Vector2 Position => body != null ? body.position : transform.position;
         public IReadOnlyList<Vector2> CurrentPath => path;
@@ -36,6 +37,10 @@ namespace MicroJam.Game
         {
             body ??= GetComponent<Rigidbody2D>();
             visual ??= transform.Find("Visual")?.GetComponent<SpriteRenderer>();
+            if (visual != null)
+            {
+                visual.flipX = false;
+            }
             if (body != null) body.mass = Mathf.Max(body.mass, pushResistanceMass);
         }
 
@@ -78,7 +83,32 @@ namespace MicroJam.Game
             direction = AvoidPlayer(direction);
             float distance = Mathf.Min(moveSpeed * Time.fixedDeltaTime, offset.magnitude);
             body.MovePosition(body.position + direction * distance);
-            if (visual != null && Mathf.Abs(direction.x) > 0.01f) visual.flipX = direction.x < 0f;
+            UpdateFacing(direction);
+        }
+
+        public void FaceTowards(Vector2 worldPosition)
+        {
+            UpdateFacing(worldPosition - Position);
+        }
+
+        private void UpdateFacing(Vector2 direction)
+        {
+            if (direction.sqrMagnitude > 0.0001f) facingDirection = direction.normalized;
+        }
+
+        private void LateUpdate()
+        {
+            if (visual == null) return;
+
+            // Every sheet is authored looking right, so rotate that local +X direction toward
+            // the actual 2D movement/attack direction. Only Visual rotates; UI and colliders do not.
+            Transform visualTransform = visual.transform;
+            Vector3 scale = visualTransform.localScale;
+            scale.x = Mathf.Abs(scale.x);
+            visualTransform.localScale = scale;
+            float angle = Mathf.Atan2(facingDirection.y, facingDirection.x) * Mathf.Rad2Deg;
+            visualTransform.localRotation = Quaternion.Euler(0f, 0f, angle);
+            visual.flipX = false;
         }
 
         private Vector2 AvoidPlayer(Vector2 forward)

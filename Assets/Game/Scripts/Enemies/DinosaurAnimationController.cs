@@ -87,9 +87,10 @@ namespace MicroJam.Game
             return true;
         }
 
-        private void OnSuccessfulAttack(Health _)
+        private void OnSuccessfulAttack(Health target)
         {
             if (dying || attackClips.Count == 0) return;
+            if (target != null) movement?.FaceTowards(target.transform.position);
             attackQueued = true;
             if (movement == null || !movement.HasPath)
             {
