@@ -14,15 +14,15 @@ namespace MicroJam.Game
         [SerializeField] private Color selectedColor = new(1f, 0.72f, 0.2f, 1f);
         [SerializeField, Min(1f)] private float selectedScale = 1.1f;
 
-        private static readonly Color WallColor = new(0.42f, 0.22f, 0.08f, 1f);
-        private static readonly Color DoorColor = new(0.24f, 0.43f, 0.55f, 1f);
-        private static readonly Color BowTowerColor = new(0.28f, 0.42f, 0.25f, 1f);
-        private static readonly Color StoneTowerColor = new(0.38f, 0.4f, 0.46f, 1f);
         private BuildSelection tutorialHighlight;
         private Button wallButton;
         private Button doorButton;
         private Button bowTowerButton;
         private Button stoneTowerButton;
+        private Text wallCostLabel;
+        private Text doorCostLabel;
+        private Text bowTowerCostLabel;
+        private Text stoneTowerCostLabel;
 
         public Image WallSlot => wallSlot;
         public Image DoorSlot => doorSlot;
@@ -43,6 +43,8 @@ namespace MicroJam.Game
         {
             buildingSystem ??= FindFirstObjectByType<BuildingSystem>();
             CacheButtons();
+            FindCostLabels();
+            RefreshCosts();
         }
 
         private void OnEnable()
@@ -70,10 +72,10 @@ namespace MicroJam.Game
         private void Refresh(BuildSelection selection)
         {
             BuildSelection displayedSelection = tutorialHighlight != BuildSelection.None ? tutorialHighlight : selection;
-            SetSlot(wallSlot, displayedSelection == BuildSelection.Wall, WallColor);
-            SetSlot(doorSlot, displayedSelection == BuildSelection.Door, DoorColor);
-            SetSlot(bowTowerSlot, displayedSelection == BuildSelection.BowTower, BowTowerColor);
-            SetSlot(stoneTowerSlot, displayedSelection == BuildSelection.StoneTower, StoneTowerColor);
+            SetSlot(wallSlot, displayedSelection == BuildSelection.Wall);
+            SetSlot(doorSlot, displayedSelection == BuildSelection.Door);
+            SetSlot(bowTowerSlot, displayedSelection == BuildSelection.BowTower);
+            SetSlot(stoneTowerSlot, displayedSelection == BuildSelection.StoneTower);
         }
 
         /// <summary>Draws attention to a build slot while the tutorial is teaching it.</summary>
@@ -83,11 +85,11 @@ namespace MicroJam.Game
             Refresh(buildingSystem != null ? buildingSystem.Selection : BuildSelection.None);
         }
 
-        private void SetSlot(Image slot, bool selected, Color normalColor)
+        private void SetSlot(Image slot, bool selected)
         {
             if (slot == null) return;
 
-            slot.color = selected ? selectedColor : normalColor;
+            slot.color = Color.white;
             UIButtonTween tween = slot.GetComponent<UIButtonTween>();
             if (tween != null) tween.SetSelected(selected);
             else slot.rectTransform.localScale = selected ? Vector3.one * selectedScale : Vector3.one;
@@ -99,6 +101,53 @@ namespace MicroJam.Game
             doorButton = doorSlot != null ? doorSlot.GetComponent<Button>() : null;
             bowTowerButton = bowTowerSlot != null ? bowTowerSlot.GetComponent<Button>() : null;
             stoneTowerButton = stoneTowerSlot != null ? stoneTowerSlot.GetComponent<Button>() : null;
+        }
+
+        private void FindCostLabels()
+        {
+            wallCostLabel = FindCostLabel(wallSlot);
+            doorCostLabel = FindCostLabel(doorSlot);
+            bowTowerCostLabel = FindCostLabel(bowTowerSlot);
+            stoneTowerCostLabel = FindCostLabel(stoneTowerSlot);
+        }
+
+        private void RefreshCosts()
+        {
+            if (buildingSystem == null) return;
+
+            SetCost(wallCostLabel, buildingSystem.WallDefinition);
+            SetCost(doorCostLabel, buildingSystem.DoorDefinition);
+            SetCost(bowTowerCostLabel, buildingSystem.BowTowerDefinition);
+            SetCost(stoneTowerCostLabel, buildingSystem.StoneTowerDefinition);
+        }
+
+        private static Text FindCostLabel(Image slot)
+        {
+            if (slot == null) return null;
+            return slot.transform.Find("CostLabel")?.GetComponent<Text>();
+        }
+
+        private static void SetCost(Text label, BuildingDefinition definition)
+        {
+            if (label == null) return;
+            if (definition == null)
+            {
+                label.text = "--";
+                return;
+            }
+
+            if (definition.WoodCost > 0 && definition.StoneCost > 0)
+            {
+                label.text = $"{definition.WoodCost}W {definition.StoneCost}S";
+            }
+            else if (definition.StoneCost > 0)
+            {
+                label.text = $"{definition.StoneCost}S";
+            }
+            else
+            {
+                label.text = $"{definition.WoodCost}W";
+            }
         }
 
         private void AddButtonListeners()
