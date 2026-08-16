@@ -1,6 +1,5 @@
 ﻿<Solution>
   <Project Path="MicroJam.Game.csproj" />
-  <Project Path="Assembly-CSharp.csproj" />
   <Project Path="MicroJam.Game.Editor.csproj" />
   <Project Path="MicroJam.Game.PlayModeTests.csproj" />
 </Solution>

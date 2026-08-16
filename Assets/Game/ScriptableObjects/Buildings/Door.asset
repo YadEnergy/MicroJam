@@ -16,6 +16,7 @@ MonoBehaviour:
   displayName: Door
   prefab: {fileID: 781099453993524036, guid: 1834c407bcf5ca84fa1deb325e8f8d6a, type: 3}
   woodCost: 10
+  stoneCost: 0
   footprintSize: {x: 1, y: 1}
   blocksPlayer: 0
   blocksDinosaur: 1

@@ -487,6 +487,24 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "SelectBowTower",
+                    "type": "Button",
+                    "id": "4d167b72-5c8a-4f3d-9c21-67f49142aee1",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SelectStoneTower",
+                    "type": "Button",
+                    "id": "8b72c0a5-c945-441a-833d-1a1eea723c90",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Cancel",
                     "type": "Button",
                     "id": "86a546dd-6759-4b91-8f68-73a6f99bdb38",
@@ -534,6 +552,28 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "SelectDoor",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "be451a30-9bad-4607-bb43-5b56fe4ee1f2",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "SelectBowTower",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "74a441dc-7761-4117-8393-319d369516c3",
+                    "path": "<Keyboard>/4",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "SelectStoneTower",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

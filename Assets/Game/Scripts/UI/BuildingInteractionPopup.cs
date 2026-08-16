@@ -79,7 +79,7 @@ namespace MicroJam.Game
 
             if (removalPromptText != null)
             {
-                removalPromptText.text = valid ? $"Remove this building?\nRefund: {target.RemovalRefundWood} Wood" : "This building no longer exists.";
+                removalPromptText.text = valid ? BuildRefundText(target) : "This building no longer exists.";
             }
 
             if (removeButton != null)
@@ -133,5 +133,14 @@ namespace MicroJam.Game
         private void HandleHealthChanged(HealthChangedEvent _) => Refresh();
         private void HandleBuildingRemoving(BuildingRemovalEvent _) => Close();
         private static string FormatHealth(float value) => Mathf.CeilToInt(value).ToString();
+
+        private static string BuildRefundText(BuildingInstance building)
+        {
+            int wood = building.RemovalRefundWood;
+            int stone = building.RemovalRefundStone;
+            if (stone <= 0) return $"Remove this building?\nRefund: {wood} Wood";
+            if (wood <= 0) return $"Remove this building?\nRefund: {stone} Stone";
+            return $"Remove this building?\nRefund: {wood} Wood + {stone} Stone";
+        }
     }
 }

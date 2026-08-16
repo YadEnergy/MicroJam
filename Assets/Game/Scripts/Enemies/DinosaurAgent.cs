@@ -40,11 +40,13 @@ namespace MicroJam.Game
         private void OnEnable()
         {
             if (health != null) health.Died += OnDied;
+            DinosaurRegistry.Register(this);
         }
 
         private void OnDisable()
         {
             if (health != null) health.Died -= OnDied;
+            DinosaurRegistry.Unregister(this);
         }
 
         private void FixedUpdate()

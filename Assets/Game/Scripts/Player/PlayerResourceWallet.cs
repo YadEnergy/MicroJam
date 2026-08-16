@@ -57,6 +57,37 @@ namespace MicroJam.Game
         public bool SpendWood(int amount) => TrySpend(PlayerResourceType.Wood, amount);
         public bool SpendStone(int amount) => TrySpend(PlayerResourceType.Stone, amount);
 
+        public bool CanAfford(int woodAmount, int stoneAmount)
+        {
+            return woodAmount >= 0 && stoneAmount >= 0 && wood >= woodAmount && stone >= stoneAmount;
+        }
+
+        public bool TrySpend(int woodAmount, int stoneAmount)
+        {
+            if (!CanAfford(woodAmount, stoneAmount))
+            {
+                return false;
+            }
+
+            SetAndNotify(PlayerResourceType.Wood, wood - woodAmount);
+            SetAndNotify(PlayerResourceType.Stone, stone - stoneAmount);
+            return true;
+        }
+
+        public bool TryAdd(int woodAmount, int stoneAmount)
+        {
+            if (woodAmount < 0 || stoneAmount < 0 || (woodAmount == 0 && stoneAmount == 0))
+            {
+                return false;
+            }
+
+            int nextWood = (int)Math.Min(int.MaxValue, (long)wood + woodAmount);
+            int nextStone = (int)Math.Min(int.MaxValue, (long)stone + stoneAmount);
+            SetAndNotify(PlayerResourceType.Wood, nextWood);
+            SetAndNotify(PlayerResourceType.Stone, nextStone);
+            return true;
+        }
+
         public int Get(PlayerResourceType resourceType)
         {
             return resourceType == PlayerResourceType.Wood ? wood : stone;

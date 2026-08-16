@@ -12,16 +12,18 @@ namespace MicroJam.Game
 
     public readonly struct BuildingRemovalEvent
     {
-        public BuildingRemovalEvent(BuildingInstance building, BuildingRemovalReason reason, int refundedWood)
+        public BuildingRemovalEvent(BuildingInstance building, BuildingRemovalReason reason, int refundedWood, int refundedStone = 0)
         {
             Building = building;
             Reason = reason;
             RefundedWood = refundedWood;
+            RefundedStone = refundedStone;
         }
 
         public BuildingInstance Building { get; }
         public BuildingRemovalReason Reason { get; }
         public int RefundedWood { get; }
+        public int RefundedStone { get; }
     }
 
     [RequireComponent(typeof(Health), typeof(GridFootprint))]
@@ -46,6 +48,7 @@ namespace MicroJam.Game
         public bool BlocksDinosaur => definition != null && definition.BlocksDinosaur;
         public bool RemovalStarted => removalStarted;
         public int RemovalRefundWood => definition != null ? definition.RemovalRefundWood : 0;
+        public int RemovalRefundStone => definition != null ? definition.RemovalRefundStone : 0;
 
         public event Action<BuildingRemovalEvent> Removing;
 
@@ -93,19 +96,20 @@ namespace MicroJam.Game
         public bool TryRemoveByPlayer(PlayerResourceWallet wallet)
         {
             int refund = RemovalRefundWood;
-            if (removalStarted || !registered || (refund > 0 && wallet == null))
+            int stoneRefund = RemovalRefundStone;
+            if (removalStarted || !registered || ((refund > 0 || stoneRefund > 0) && wallet == null))
             {
                 return false;
             }
 
-            if (!BeginRemoval(BuildingRemovalReason.PlayerRemoval, refund))
+            if (!BeginRemoval(BuildingRemovalReason.PlayerRemoval, refund, stoneRefund))
             {
                 return false;
             }
 
-            if (refund > 0 && !wallet.AddWood(refund))
+            if ((refund > 0 || stoneRefund > 0) && !wallet.TryAdd(refund, stoneRefund))
             {
-                Debug.LogWarning($"{name} was removed, but its {refund} Wood refund could not be added because the wallet is already full.", this);
+                Debug.LogWarning($"{name} was removed, but its {refund} Wood / {stoneRefund} Stone refund could not be added.", this);
             }
 
             return true;
@@ -113,7 +117,7 @@ namespace MicroJam.Game
 
         public bool TryDestroyWithoutRefund()
         {
-            return BeginRemoval(BuildingRemovalReason.DestroyedByDamage, 0);
+            return BeginRemoval(BuildingRemovalReason.DestroyedByDamage, 0, 0);
         }
 
         public bool ReleaseOccupancy()
@@ -160,10 +164,10 @@ namespace MicroJam.Game
         private void OnDestroy()
         {
             ReleaseOccupancy();
-            RaiseRemoving(BuildingRemovalReason.ExternalDestruction, 0);
+            RaiseRemoving(BuildingRemovalReason.ExternalDestruction, 0, 0);
         }
 
-        private bool BeginRemoval(BuildingRemovalReason reason, int refund)
+        private bool BeginRemoval(BuildingRemovalReason reason, int woodRefund, int stoneRefund)
         {
             if (removalStarted)
             {
@@ -172,14 +176,14 @@ namespace MicroJam.Game
 
             removalStarted = true;
             ReleaseOccupancy();
-            RaiseRemoving(reason, refund);
+            RaiseRemoving(reason, woodRefund, stoneRefund);
             Destroy(gameObject);
             return true;
         }
 
         private void HandleDied(DeathEvent _) => TryDestroyWithoutRefund();
 
-        private void RaiseRemoving(BuildingRemovalReason reason, int refund)
+        private void RaiseRemoving(BuildingRemovalReason reason, int woodRefund, int stoneRefund)
         {
             if (removalEventRaised)
             {
@@ -187,7 +191,7 @@ namespace MicroJam.Game
             }
 
             removalEventRaised = true;
-            Removing?.Invoke(new BuildingRemovalEvent(this, reason, refund));
+            Removing?.Invoke(new BuildingRemovalEvent(this, reason, woodRefund, stoneRefund));
         }
 
         private void OnValidate()

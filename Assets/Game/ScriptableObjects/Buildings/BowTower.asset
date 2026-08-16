@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 79e3887d3e6116b42b2367daa978a189, type: 3}
-  m_Name: Wall
+  m_Name: BowTower
   m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.BuildingDefinition
-  buildingType: 0
-  displayName: Wall
-  prefab: {fileID: 1357695580242240932, guid: 181dc11bc55eaf14a904f5723704a578, type: 3}
-  woodCost: 5
-  stoneCost: 0
-  footprintSize: {x: 1, y: 1}
+  buildingType: 2
+  displayName: Bow Tower
+  prefab: {fileID: 5787618068476322970, guid: d25b772132d75074f929374664b4ad48, type: 3}
+  woodCost: 20
+  stoneCost: 10
+  footprintSize: {x: 2, y: 2}
   blocksPlayer: 1
   blocksDinosaur: 1
-  placeholderColor: {r: 0.35, g: 0.38, b: 0.42, a: 1}
+  placeholderColor: {r: 0.26, g: 0.62, b: 0.24, a: 1}
   removalRefundPercent: 0.5

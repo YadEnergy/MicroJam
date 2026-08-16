@@ -1802,6 +1802,8 @@ MonoBehaviour:
   runtimeBuildingParent: {fileID: 1907607105}
   wallDefinition: {fileID: 11400000, guid: c419b1214005fd544b3336ecc9b1c047, type: 2}
   doorDefinition: {fileID: 11400000, guid: 2c0309f28e4f99049a3e0650496f3920, type: 2}
+  bowTowerDefinition: {fileID: 11400000, guid: 86f742e09df99b746a616e32a1501e72, type: 2}
+  stoneTowerDefinition: {fileID: 11400000, guid: dad9d85fd2742e34493efb64709da2b3, type: 2}
   dynamicOccupantLayers:
     serializedVersion: 2
     m_Bits: 192
