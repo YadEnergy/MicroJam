@@ -61,6 +61,21 @@ namespace MicroJam.Game
             }
         }
 
+        private void OnEnable()
+        {
+            if (health != null) health.DamageReceived += HandleDamageReceived;
+        }
+
+        private void OnDisable()
+        {
+            if (health != null) health.DamageReceived -= HandleDamageReceived;
+        }
+
+        private static void HandleDamageReceived(DamageReceivedEvent damage)
+        {
+            if (damage.AppliedAmount > 0f) GameAudio.Play(GameSound.CampfireHitting);
+        }
+
         private void OnValidate()
         {
             repairWoodCost = Mathf.Max(0, repairWoodCost);

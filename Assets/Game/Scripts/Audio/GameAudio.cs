@@ -94,7 +94,9 @@ namespace MicroJam.Game
             if (!hit || target == null) { Play(GameSound.DinosaurMiss); return; }
             Transform targetTransform = target.transform;
             if (targetTransform.GetComponentInParent<PlayerMovement>() != null) Play(GameSound.DinosaurHitPlayer);
-            else if (targetTransform.GetComponentInParent<CampfireInteraction>() != null) Play(GameSound.DinosaurHitCampfire);
+            // CampfireInteraction emits its own sound from Health.DamageReceived so it is
+            // tied to applied damage rather than specifically to a dinosaur attack.
+            else if (targetTransform.GetComponentInParent<CampfireInteraction>() != null) return;
             else Play(GameSound.DinosaurHitBuilding);
         }
 

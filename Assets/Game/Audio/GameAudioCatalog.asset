@@ -26,8 +26,6 @@ MonoBehaviour:
   dinosaurDeathVolume: 1
   dinosaurHitBuilding: {fileID: 8300000, guid: 68f7a881bb6af44468d6a2b679f8040a, type: 3}
   dinosaurHitBuildingVolume: 1
-  dinosaurHitCampfire: {fileID: 8300000, guid: bd33d72ea60f436449d41ad738ac2f0f, type: 3}
-  dinosaurHitCampfireVolume: 1
   dinosaurHitPlayer: {fileID: 8300000, guid: 22316ec9bb6407243b6986c537f66d02, type: 3}
   dinosaurHitPlayerVolume: 1
   dinosaurMiss: {fileID: 8300000, guid: 20c126fdc90661347bac113c642830e5, type: 3}
@@ -48,3 +46,7 @@ MonoBehaviour:
   humanDeathVolume: 1
   humanSteps: {fileID: 8300000, guid: d53e1b104fe2b8b4b9a6677ab6a2ff9f, type: 3}
   humanStepsVolume: 1
+  campfireHitting: {fileID: 8300000, guid: bd33d72ea60f436449d41ad738ac2f0f, type: 3}
+  campfireHittingVolume: 1
+  campfireBurning: {fileID: 0}
+  campfireBurningVolume: 1

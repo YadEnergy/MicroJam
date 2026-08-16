@@ -8,7 +8,6 @@ namespace MicroJam.Game
         DestroyTower,
         DinosaurDeath,
         DinosaurHitBuilding,
-        DinosaurHitCampfire,
         DinosaurHitPlayer,
         DinosaurMiss,
         DinosaurWalk,
