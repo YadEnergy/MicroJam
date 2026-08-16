@@ -25,6 +25,7 @@ namespace MicroJam.Game
         private InputAction interactAction;
         private InputAction pointAction;
         private InputAction cancelAction;
+        private bool suppressInteractionUntilRelease;
 
         public InputActionAsset InputActions => inputActions;
         public BuildingSystem BuildingSystem => buildingSystem;
@@ -141,6 +142,7 @@ namespace MicroJam.Game
             if (buildingSystem != null)
             {
                 buildingSystem.SelectionChanged += HandleBuildSelectionChanged;
+                buildingSystem.BuildingPlaced += HandleBuildingPlaced;
             }
         }
 
@@ -149,6 +151,7 @@ namespace MicroJam.Game
             if (buildingSystem != null)
             {
                 buildingSystem.SelectionChanged -= HandleBuildSelectionChanged;
+                buildingSystem.BuildingPlaced -= HandleBuildingPlaced;
             }
 
             interactAction?.Disable();
@@ -159,6 +162,16 @@ namespace MicroJam.Game
 
         private void Update()
         {
+            if (suppressInteractionUntilRelease)
+            {
+                if (interactAction == null || !interactAction.IsPressed())
+                {
+                    suppressInteractionUntilRelease = false;
+                }
+
+                return;
+            }
+
             if (buildingSystem != null && buildingSystem.Selection != BuildSelection.None)
             {
                 return;
@@ -199,6 +212,14 @@ namespace MicroJam.Game
             {
                 CloseAll();
             }
+        }
+
+        private void HandleBuildingPlaced(BuildingInstance _)
+        {
+            // A left click is shared by construction and interaction. Ignore that same press,
+            // so a just-built object never immediately opens its sell popup.
+            suppressInteractionUntilRelease = true;
+            CloseAll();
         }
     }
 }
