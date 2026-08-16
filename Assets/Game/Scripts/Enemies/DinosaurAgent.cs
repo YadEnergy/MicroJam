@@ -34,7 +34,7 @@ namespace MicroJam.Game
             movement ??= GetComponent<DinosaurMovement>();
             attack ??= GetComponent<DinosaurAttack>();
             targeting ??= GetComponent<DinosaurTargeting>();
-            ConfigureNonBlockingActorCollisions();
+            IgnoreWorldBoundaryCollision();
         }
 
         private void OnEnable()
@@ -55,13 +55,11 @@ namespace MicroJam.Game
             targeting?.Tick();
         }
 
-        private static void ConfigureNonBlockingActorCollisions()
+        private static void IgnoreWorldBoundaryCollision()
         {
             int dinosaurLayer = GameLayers.DinosaurIndex;
             int boundaryLayer = GameLayers.WorldBoundaryIndex;
-            int playerLayer = GameLayers.PlayerIndex;
             if (dinosaurLayer >= 0 && boundaryLayer >= 0) Physics2D.IgnoreLayerCollision(dinosaurLayer, boundaryLayer, true);
-            if (dinosaurLayer >= 0 && playerLayer >= 0) Physics2D.IgnoreLayerCollision(dinosaurLayer, playerLayer, true);
         }
 
         private void OnDied(DeathEvent death)
