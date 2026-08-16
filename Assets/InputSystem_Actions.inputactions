@@ -579,17 +579,6 @@
                 },
                 {
                     "name": "",
-                    "id": "9f8094d6-f4d7-49db-a2b4-ec66700f37ea",
-                    "path": "<Keyboard>/escape",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Cancel",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "6301dd4d-1c63-4d70-88a1-e5a0b9c6552c",
                     "path": "<Mouse>/rightButton",
                     "interactions": "",
@@ -681,7 +670,7 @@
                 {
                     "name": "",
                     "id": "ec85d7c5-fbf8-4206-a514-b28a18b9ee08",
-                    "path": "<Keyboard>/escape",
+                    "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",

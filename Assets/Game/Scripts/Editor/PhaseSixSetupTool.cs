@@ -168,10 +168,12 @@ namespace MicroJam.Game.Editor
             Stretch(interactionRoot.GetComponent<RectTransform>());
             Canvas canvas = GetOrAdd<Canvas>(interactionRoot);
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.worldCamera = null;
+            canvas.overrideSorting = true;
             canvas.sortingOrder = 100;
             CanvasScaler scaler = GetOrAdd<CanvasScaler>(interactionRoot);
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(960f, 540f);
+            scaler.referenceResolution = new Vector2(1024f, 1024f);
             scaler.matchWidthOrHeight = 0.5f;
             GetOrAdd<GraphicRaycaster>(interactionRoot);
 

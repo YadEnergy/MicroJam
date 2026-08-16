@@ -10,6 +10,7 @@ namespace MicroJam.Game
         [SerializeField] private Text repairDescriptionText;
         [SerializeField] private Button repairButton;
         [SerializeField] private Button closeButton;
+        [SerializeField] private UIPanelTween panelTween;
 
         private CampfireInteraction target;
         private PlayerResourceWallet wallet;
@@ -20,6 +21,7 @@ namespace MicroJam.Game
         public Text RepairDescriptionText => repairDescriptionText;
         public Button RepairButton => repairButton;
         public Button CloseButton => closeButton;
+        public UIPanelTween PanelTween => panelTween;
         public bool IsOpen => gameObject.activeSelf;
 
         public void Configure(Text configuredTitle, Text configuredHealth, Text configuredDescription, Button configuredRepair, Button configuredClose)
@@ -31,13 +33,16 @@ namespace MicroJam.Game
             closeButton = configuredClose;
         }
 
+        public void ConfigureTween(UIPanelTween tween) => panelTween = tween;
+
         public void Open(CampfireInteraction campfire, PlayerResourceWallet playerWallet)
         {
             Unsubscribe();
             target = campfire;
             wallet = playerWallet;
             Subscribe();
-            gameObject.SetActive(true);
+            if (panelTween != null) panelTween.Show();
+            else gameObject.SetActive(true);
             Refresh();
         }
 
@@ -46,10 +51,8 @@ namespace MicroJam.Game
             Unsubscribe();
             target = null;
             wallet = null;
-            if (gameObject.activeSelf)
-            {
-                gameObject.SetActive(false);
-            }
+            if (panelTween != null) panelTween.Hide();
+            else if (gameObject.activeSelf) gameObject.SetActive(false);
         }
 
         public bool RepairCampfire()

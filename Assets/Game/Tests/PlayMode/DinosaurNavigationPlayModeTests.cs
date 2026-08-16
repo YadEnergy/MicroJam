@@ -521,7 +521,7 @@ namespace MicroJam.Game.Tests
         {
             Assert.That(scaler, Is.Not.Null);
             Assert.That(scaler.uiScaleMode, Is.EqualTo(CanvasScaler.ScaleMode.ScaleWithScreenSize));
-            Assert.That(scaler.referenceResolution, Is.EqualTo(new Vector2(960f, 540f)));
+            Assert.That(scaler.referenceResolution, Is.EqualTo(new Vector2(1024f, 1024f)));
             Assert.That(scaler.matchWidthOrHeight, Is.EqualTo(0.5f).Within(0.001f));
         }
 

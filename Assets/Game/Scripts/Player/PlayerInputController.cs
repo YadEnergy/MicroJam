@@ -67,6 +67,13 @@ namespace MicroJam.Game
 
         private void Update()
         {
+            if (GameplayInputGate.IsBlocked)
+            {
+                movement?.SetMoveInput(Vector2.zero);
+                combat?.SetAttackHeld(false);
+                return;
+            }
+
             movement?.SetMoveInput(moveAction != null ? moveAction.ReadValue<Vector2>() : Vector2.zero);
             combat?.SetAttackHeld(attackAction != null && attackAction.IsPressed());
 

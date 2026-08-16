@@ -345,6 +345,12 @@ namespace MicroJam.Game
 
         private void Update()
         {
+            if (GameplayInputGate.IsBlocked)
+            {
+                placementPreview?.Hide();
+                return;
+            }
+
             if (selectWallAction != null && selectWallAction.WasPressedThisFrame())
             {
                 SelectBuildMode(BuildSelection.Wall);

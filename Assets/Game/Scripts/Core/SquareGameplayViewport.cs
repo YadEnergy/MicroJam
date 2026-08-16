@@ -120,5 +120,14 @@ namespace MicroJam.Game
                 gameplayCamera = GetComponent<Camera>();
             }
         }
+
+        private void OnValidate()
+        {
+            EnsureCamera();
+            if (!Application.isPlaying && gameplayCamera != null)
+            {
+                gameplayCamera.rect = new Rect(0f, 0f, 1f, 1f);
+            }
+        }
     }
 }

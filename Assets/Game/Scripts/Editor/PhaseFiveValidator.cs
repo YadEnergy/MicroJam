@@ -72,8 +72,8 @@ namespace MicroJam.Game.Editor
             if (cancel != null)
             {
                 string[] cancelPaths = cancel.bindings.Select(binding => binding.path).ToArray();
-                Require(cancelPaths.Length == 2 && cancelPaths.Contains("<Keyboard>/escape") && cancelPaths.Contains("<Mouse>/rightButton"),
-                    "Building/Cancel must be bound only to Escape and RMB.", failures);
+                Require(cancelPaths.Length == 1 && cancelPaths[0] == "<Mouse>/rightButton",
+                    "Building/Cancel must be bound only to RMB; Escape is reserved for Pause.", failures);
             }
         }
 
