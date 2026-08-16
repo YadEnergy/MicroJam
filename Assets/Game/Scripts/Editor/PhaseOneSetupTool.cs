@@ -198,7 +198,7 @@ namespace MicroJam.Game.Editor
             GameObject root = NewRoot(name, GameLayers.ResourceIndex);
             CircleCollider2D collider = root.AddComponent<CircleCollider2D>();
             collider.radius = 0.45f;
-            collider.isTrigger = true;
+            collider.isTrigger = false;
             CreateVisual(root.transform, "Visual", circle, color, new Vector2(0.9f, 0.9f), 7, GameLayers.ResourceIndex);
             SavePrefabAndDestroy(root, path);
         }
@@ -334,8 +334,8 @@ namespace MicroJam.Game.Editor
 
             SetIgnored(GameLayers.DinosaurIndex, GameLayers.DinosaurIndex, true);
             SetIgnored(GameLayers.PlayerIndex, GameLayers.DoorIndex, true);
-            SetIgnored(GameLayers.PlayerIndex, GameLayers.ResourceIndex, true);
-            SetIgnored(GameLayers.DinosaurIndex, GameLayers.ResourceIndex, true);
+            SetIgnored(GameLayers.PlayerIndex, GameLayers.ResourceIndex, false);
+            SetIgnored(GameLayers.DinosaurIndex, GameLayers.ResourceIndex, false);
             SetIgnored(GameLayers.PlayerIndex, GameLayers.DinosaurIndex, false);
             SetIgnored(GameLayers.PlayerIndex, GameLayers.BuildingIndex, false);
             SetIgnored(GameLayers.DinosaurIndex, GameLayers.BuildingIndex, false);

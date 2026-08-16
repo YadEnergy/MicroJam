@@ -8,11 +8,13 @@ namespace MicroJam.Game
     public sealed class ResourcePopulationDefinition
     {
         [SerializeField] private ResourceNode prefab;
+        [SerializeField] private Sprite[] visualVariants = Array.Empty<Sprite>();
         [SerializeField, Min(0)] private int initialCount = 10;
         [SerializeField, Min(0)] private int minimumCount = 5;
         [SerializeField] private Transform runtimeParent;
 
         public ResourceNode Prefab => prefab;
+        public IReadOnlyList<Sprite> VisualVariants => visualVariants;
         public int InitialCount => initialCount;
         public int MinimumCount => minimumCount;
         public Transform RuntimeParent => runtimeParent;
@@ -123,34 +125,52 @@ namespace MicroJam.Game
 
         public bool IsValidSpawnCell(Vector2Int cell, bool replacement)
         {
+            return IsValidSpawnCell(null, cell, replacement);
+        }
+
+        private bool IsValidSpawnCell(ResourceNodeType? spawningType, Vector2Int cell, bool replacement)
+        {
             if (worldGrid == null || worldGrid.Config == null || occupancy == null)
             {
                 return false;
             }
 
             WorldGridConfig config = worldGrid.Config;
-            if (!config.IsCellInsidePlayableArea(cell) || config.ProtectedCampfireCellRect.Contains(cell) ||
-                (replacement && config.IsCellInsideBuildZone(cell)) || occupancy.IsCellOccupied(cell))
+            Vector2Int[] footprint = GetFootprintCells(spawningType, cell);
+            for (int i = 0; i < footprint.Length; i++)
             {
-                return false;
+                Vector2Int footprintCell = footprint[i];
+                if (!config.IsCellInsidePlayableArea(footprintCell) ||
+                    config.ProtectedCampfireCellRect.Contains(footprintCell) ||
+                    (replacement && config.IsCellInsideBuildZone(footprintCell)) ||
+                    occupancy.IsCellOccupied(footprintCell))
+                {
+                    return false;
+                }
+
+                Vector2 center = config.CellToWorldCenter(footprintCell);
+                if (Physics2D.OverlapBox(center, Vector2.one * cellOverlapSize, 0f, spawnBlockingLayers) != null)
+                {
+                    return false;
+                }
             }
 
-            Vector2 center = config.CellToWorldCenter(cell);
-            return Physics2D.OverlapBox(center, Vector2.one * cellOverlapSize, 0f, spawnBlockingLayers) == null;
+            return true;
         }
 
         public bool TrySpawnAtCell(ResourceNodeType type, Vector2Int cell, bool replacement, out ResourceNode spawned)
         {
             spawned = null;
             ResourcePopulationDefinition definition = GetDefinition(type);
-            if (definition?.Prefab == null || definition.RuntimeParent == null || !IsValidSpawnCell(cell, replacement))
+            if (definition?.Prefab == null || definition.RuntimeParent == null || !IsValidSpawnCell(type, cell, replacement))
             {
                 return false;
             }
 
-            Vector2 position = worldGrid.Config.CellToWorldCenter(cell);
+            Vector2 position = GetSpawnWorldPosition(type, cell);
             spawned = Instantiate(definition.Prefab, position, Quaternion.identity, definition.RuntimeParent);
             spawned.name = $"{type} [{cell.x}, {cell.y}]";
+            ApplyRandomVisual(spawned, definition);
             if (!spawned.InitializeSpawn(this, cell, replacement))
             {
                 Destroy(spawned.gameObject);
@@ -162,11 +182,62 @@ namespace MicroJam.Game
             return true;
         }
 
+        private Vector2 GetSpawnWorldPosition(ResourceNodeType type, Vector2Int anchorCell)
+        {
+            Vector2 position = worldGrid.Config.CellToWorldCenter(anchorCell);
+            return type == ResourceNodeType.Tree
+                ? position + Vector2.one * (worldGrid.Config.TileSize * 0.5f)
+                : position;
+        }
+
+        private static Vector2Int[] GetFootprintCells(ResourceNodeType? type, Vector2Int anchorCell)
+        {
+            if (type != ResourceNodeType.Tree) return new[] { anchorCell };
+            return new[]
+            {
+                anchorCell,
+                anchorCell + Vector2Int.right,
+                anchorCell + Vector2Int.up,
+                anchorCell + Vector2Int.one
+            };
+        }
+
+        private static void ApplyRandomVisual(ResourceNode node, ResourcePopulationDefinition definition)
+        {
+            if (node == null || definition?.VisualVariants == null) return;
+
+            int validVariantCount = 0;
+            for (int i = 0; i < definition.VisualVariants.Count; i++)
+            {
+                if (definition.VisualVariants[i] != null) validVariantCount++;
+            }
+
+            // An empty list intentionally keeps the sprite authored on the prefab.
+            if (validVariantCount == 0) return;
+
+            int selectedIndex = UnityEngine.Random.Range(0, validVariantCount);
+            Sprite selectedSprite = null;
+            for (int i = 0; i < definition.VisualVariants.Count; i++)
+            {
+                Sprite candidate = definition.VisualVariants[i];
+                if (candidate == null) continue;
+                if (selectedIndex-- == 0)
+                {
+                    selectedSprite = candidate;
+                    break;
+                }
+            }
+
+            Transform visual = node.transform.Find("Visual");
+            SpriteRenderer renderer = visual != null ? visual.GetComponent<SpriteRenderer>() : null;
+            if (renderer != null) renderer.sprite = selectedSprite;
+        }
+
         public bool RegisterSpawnedNode(ResourceNode node)
         {
             EnsureCollections();
             if (node == null || occupancy == null || activeNodes[node.NodeType].Contains(node) ||
-                !occupancy.TryRegister(node, node.OccupiedCell))
+                !occupancy.TryRegister(node, GetFootprintCells(node.NodeType, node.OccupiedCell)))
             {
                 return false;
             }
@@ -200,10 +271,21 @@ namespace MicroJam.Game
         private void Awake()
         {
             EnsureCollections();
+            EnsureResourceCollisions();
             if (worldGrid == null || occupancy == null)
             {
                 Debug.LogError("ResourcePopulationManager requires scene-bound grid and occupancy references.", this);
             }
+        }
+
+        private static void EnsureResourceCollisions()
+        {
+            int resourceLayer = GameLayers.ResourceIndex;
+            int playerLayer = GameLayers.PlayerIndex;
+            int dinosaurLayer = GameLayers.DinosaurIndex;
+            if (resourceLayer < 0) return;
+            if (playerLayer >= 0) Physics2D.IgnoreLayerCollision(playerLayer, resourceLayer, false);
+            if (dinosaurLayer >= 0) Physics2D.IgnoreLayerCollision(dinosaurLayer, resourceLayer, false);
         }
 
         private void Start()
@@ -261,7 +343,7 @@ namespace MicroJam.Game
             List<Vector2Int> fallback = new(playable.width * playable.height);
             foreach (Vector2Int cell in playable.allPositionsWithin)
             {
-                if (IsValidSpawnCell(cell, replacement))
+                if (IsValidSpawnCell(type, cell, replacement))
                 {
                     fallback.Add(cell);
                 }

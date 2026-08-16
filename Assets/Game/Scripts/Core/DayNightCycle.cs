@@ -1,4 +1,5 @@
 using System.Collections;
+using System;
 using UnityEngine;
 
 namespace MicroJam.Game
@@ -9,7 +10,7 @@ namespace MicroJam.Game
         [SerializeField, Min(0.01f)] private float dayDuration = 60f;
         [SerializeField] private bool waitForTutorialBeforeFirstNight;
 
-        private bool isDay;
+        private bool isDay = true;
         private bool isDayCountdownActive;
         private float dayEndsAt;
         private int currentDayNumber;
@@ -19,6 +20,7 @@ namespace MicroJam.Game
         public bool IsDayCountdownActive => isDayCountdownActive;
         public float DaySecondsRemaining => isDayCountdownActive ? Mathf.Max(0f, dayEndsAt - Time.time) : 0f;
         public int CurrentDayNumber => currentDayNumber;
+        public event Action<bool> DayStateChanged;
 
         /// <summary>
         /// Ends the held first day. Used by the tutorial immediately before it asks the player to fight a dinosaur.
@@ -67,6 +69,7 @@ namespace MicroJam.Game
             {
                 currentDayNumber++;
                 isDay = true;
+                DayStateChanged?.Invoke(true);
                 if (currentDayNumber == 1 && waitForTutorialBeforeFirstNight)
                 {
                     yield return new WaitUntil(() => firstNightRequested);
@@ -80,6 +83,7 @@ namespace MicroJam.Game
 
                 isDay = false;
                 isDayCountdownActive = false;
+                DayStateChanged?.Invoke(false);
                 yield return dinosaurSpawner.RunNextWaveAndWaitUntilCleared();
             }
         }

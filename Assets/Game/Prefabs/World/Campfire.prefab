@@ -230,6 +230,9 @@ MonoBehaviour:
   health: {fileID: 4349097148670265896}
   repairWoodCost: 20
   repairHealthPercent: 0.1
+  fullVolumeDistance: 1.5
+  maxAudibleDistance: 12
+  volumeChangeSpeed: 4
 --- !u!1 &1342922911327894189
 GameObject:
   m_ObjectHideFlags: 0

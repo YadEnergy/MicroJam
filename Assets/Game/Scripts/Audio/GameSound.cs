@@ -8,16 +8,17 @@ namespace MicroJam.Game
         DestroyTower,
         DinosaurDeath,
         DinosaurHitBuilding,
-        DinosaurHitCampfire,
         DinosaurHitPlayer,
         DinosaurMiss,
         DinosaurWalk,
+        DinosaurGetHit,
         HumanHitBush,
-        HumanHitDinosaur,
         HumanHitRock,
         HumanHitTree,
         HumanMiss,
         HumanDeath,
-        HumanSteps
+        HumanSteps,
+        CampfireHitting,
+        CampfireBurning
     }
 }

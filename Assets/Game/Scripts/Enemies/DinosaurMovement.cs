@@ -101,7 +101,9 @@ namespace MicroJam.Game
             if (body != null)
             {
                 body.angularVelocity = 0f;
-                body.SetRotation(facingAngle);
+                // Keep the actor root fixed so child UI anchors do not orbit around it.
+                // Only the authored dinosaur visual rotates to face movement/attack direction.
+                body.SetRotation(0f);
             }
         }
 
@@ -109,13 +111,13 @@ namespace MicroJam.Game
         {
             if (visual == null) return;
 
-            // The Rigidbody rotation turns both the sprite and its capsule collider. Keep the
-            // Visual local to the body and counter-rotate only the world-space health bar.
+            // Rotate only the sprite. The root, collider, and HealthBarAnchor stay aligned
+            // with the world, keeping the health bar horizontally above the dinosaur.
             Transform visualTransform = visual.transform;
             Vector3 scale = visualTransform.localScale;
             scale.x = Mathf.Abs(scale.x);
             visualTransform.localScale = scale;
-            visualTransform.localRotation = Quaternion.identity;
+            visualTransform.rotation = Quaternion.Euler(0f, 0f, facingAngle);
             visual.flipX = false;
             if (healthBarRoot != null) healthBarRoot.rotation = Quaternion.identity;
         }

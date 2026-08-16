@@ -56,9 +56,11 @@ namespace MicroJam.Game.Editor
                     hotbar.BowTowerSlot != null && hotbar.StoneTowerSlot != null,
                 "Four-slot Build toolbar is not fully wired.", failures);
             Canvas gameplayCanvas = hotbar != null ? hotbar.GetComponentInParent<Canvas>() : null;
-            Require(gameplayCanvas != null && gameplayCanvas.renderMode == RenderMode.ScreenSpaceOverlay &&
+            Camera gameplayCamera = FindInScene<SquareGameplayViewport>(game)?.GetComponent<Camera>();
+            Require(gameplayCanvas != null && gameplayCanvas.renderMode == RenderMode.ScreenSpaceCamera &&
+                    gameplayCanvas.worldCamera == gameplayCamera &&
                     gameplayCanvas.overrideSorting && gameplayCanvas.sortingOrder >= 200,
-                "Gameplay UI Canvas must render as a top-level Screen Space Overlay.", failures);
+                "Gameplay UI Canvas must render inside the square gameplay Camera viewport.", failures);
             RectTransform hotbarRect = hotbar != null ? hotbar.transform as RectTransform : null;
             Require(hotbarRect != null && hotbarRect.anchorMin == new Vector2(1f, 0f) &&
                     hotbarRect.anchorMax == new Vector2(1f, 0f) && hotbarRect.pivot == new Vector2(1f, 0f),
@@ -72,7 +74,6 @@ namespace MicroJam.Game.Editor
             Require(death != null && pause != null && ended != null &&
                     death.GetSiblingIndex() < pause.GetSiblingIndex() && pause.GetSiblingIndex() < ended.GetSiblingIndex(),
                 "Overlay priority must be Death below Pause below Game Over.", failures);
-            Camera gameplayCamera = FindInScene<SquareGameplayViewport>(game)?.GetComponent<Camera>();
             Require(gameplayCamera != null && gameplayCamera.rect == new Rect(0f, 0f, 1f, 1f),
                 "Gameplay Camera must use the full 1024x1024 viewport.", failures);
             CanvasGroup gameTransition = FindNamed(game, "SceneTransitionOverlay")?.GetComponent<CanvasGroup>();
@@ -110,10 +111,12 @@ namespace MicroJam.Game.Editor
             Canvas canvas = hotbar.GetComponentInParent<Canvas>();
             if (canvas == null) throw new InvalidOperationException("Build toolbar is not under a Canvas.");
             SquareGameplayViewport viewport = FindInScene<SquareGameplayViewport>(scene);
-            if (viewport != null) viewport.GetComponent<Camera>().rect = new Rect(0f, 0f, 1f, 1f);
-            ConfigureOverlayCanvas(canvas, 200);
+            Camera gameplayCamera = viewport != null ? viewport.GetComponent<Camera>() : null;
+            if (gameplayCamera == null) throw new InvalidOperationException("Game scene requires the square gameplay Camera.");
+            gameplayCamera.rect = new Rect(0f, 0f, 1f, 1f);
+            ConfigureGameplayCanvas(canvas, gameplayCamera, 200);
             Canvas interactionCanvas = interactions.GetComponentInParent<Canvas>();
-            if (interactionCanvas != null && interactionCanvas != canvas) ConfigureOverlayCanvas(interactionCanvas, 100);
+            if (interactionCanvas != null && interactionCanvas != canvas) ConfigureGameplayCanvas(interactionCanvas, gameplayCamera, 100);
             foreach (CanvasScaler scaler in FindObjectsInScene<CanvasScaler>(scene)) ConfigureScaler(scaler);
 
             RectTransform hotbarRect = hotbar.transform as RectTransform;
@@ -417,10 +420,10 @@ namespace MicroJam.Game.Editor
             scaler.matchWidthOrHeight = 0.5f;
         }
 
-        private static void ConfigureOverlayCanvas(Canvas canvas, int sortingOrder)
+        private static void ConfigureGameplayCanvas(Canvas canvas, Camera gameplayCamera, int sortingOrder)
         {
-            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvas.worldCamera = null;
+            canvas.renderMode = RenderMode.ScreenSpaceCamera;
+            canvas.worldCamera = gameplayCamera;
             canvas.overrideSorting = true;
             canvas.sortingLayerID = 0;
             canvas.sortingOrder = sortingOrder;

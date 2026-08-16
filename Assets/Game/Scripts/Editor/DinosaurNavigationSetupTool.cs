@@ -163,8 +163,8 @@ namespace MicroJam.Game.Editor
             Canvas hudCanvas = Require<Canvas>(hudRoot.gameObject, "Game/UI/Canvas");
             CanvasScaler hudScaler = Require<CanvasScaler>(hudRoot.gameObject, "Game/UI/Canvas");
             gameplayCamera.rect = new Rect(0f, 0f, 1f, 1f);
-            hudCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            hudCanvas.worldCamera = null;
+            hudCanvas.renderMode = RenderMode.ScreenSpaceCamera;
+            hudCanvas.worldCamera = gameplayCamera;
             hudCanvas.overrideSorting = true;
             hudCanvas.sortingOrder = 200;
             ConfigureScaler(hudScaler);
@@ -184,8 +184,8 @@ namespace MicroJam.Game.Editor
 
             Canvas interactionCanvas = Require<Canvas>(interactionRoot.gameObject, "Game/UI/WorldInteraction");
             CanvasScaler interactionScaler = Require<CanvasScaler>(interactionRoot.gameObject, "Game/UI/WorldInteraction");
-            interactionCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            interactionCanvas.worldCamera = null;
+            interactionCanvas.renderMode = RenderMode.ScreenSpaceCamera;
+            interactionCanvas.worldCamera = gameplayCamera;
             interactionCanvas.overrideSorting = true;
             interactionCanvas.sortingOrder = 100;
             ConfigureScaler(interactionScaler);

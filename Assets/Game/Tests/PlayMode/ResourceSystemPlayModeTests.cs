@@ -168,7 +168,7 @@ namespace MicroJam.Game.Tests
             Assert.That(manager.ActiveTreeCount, Is.EqualTo(5));
             Assert.That(manager.ActiveRockCount, Is.EqualTo(5));
             Assert.That(manager.ActiveBushCount, Is.EqualTo(5));
-            Assert.That(manager.Occupancy.OccupiedCellCount, Is.EqualTo(15));
+            Assert.That(manager.Occupancy.OccupiedCellCount, Is.EqualTo(30));
             UnityEngine.Object.Destroy(nonPlayer);
             yield return null;
             LogAssert.NoUnexpectedReceived();
@@ -182,7 +182,7 @@ namespace MicroJam.Game.Tests
             Assert.That(manager.ActiveRockCount, Is.EqualTo(10));
             Assert.That(manager.ActiveBushCount, Is.EqualTo(10));
             Assert.That(manager.ActiveNodeCount, Is.EqualTo(30));
-            Assert.That(manager.Occupancy.OccupiedCellCount, Is.EqualTo(30));
+            Assert.That(manager.Occupancy.OccupiedCellCount, Is.EqualTo(60));
 
             HashSet<Vector2Int> uniqueCells = new();
             foreach (ResourceNodeType type in Enum.GetValues(typeof(ResourceNodeType)))
@@ -197,10 +197,15 @@ namespace MicroJam.Game.Tests
                     Assert.That(node.IsReplacementSpawn, Is.False);
                     Assert.That(node.Health.CurrentHealth, Is.EqualTo(node.Health.MaxHealth));
                     Assert.That(node.GetComponentInChildren<HealthBar>(true).IsVisible, Is.False);
-                    Assert.That(node.GetComponent<Collider2D>().isTrigger, Is.True);
+                    Assert.That(node.GetComponent<Collider2D>().isTrigger, Is.False);
                     Assert.That(manager.WorldGrid.Config.IsCellInsidePlayableArea(node.OccupiedCell), Is.True);
                     Assert.That(manager.WorldGrid.Config.ProtectedCampfireCellRect.Contains(node.OccupiedCell), Is.False);
-                    Assert.That(node.transform.position, Is.EqualTo((Vector3)manager.WorldGrid.CellToWorldCenter(node.OccupiedCell)));
+                    Vector2 expectedPosition = manager.WorldGrid.CellToWorldCenter(node.OccupiedCell);
+                    if (type == ResourceNodeType.Tree)
+                    {
+                        expectedPosition += Vector2.one * (manager.WorldGrid.Config.TileSize * 0.5f);
+                    }
+                    Assert.That(node.transform.position, Is.EqualTo((Vector3)expectedPosition));
                     Assert.That(uniqueCells.Add(node.OccupiedCell), Is.True, "Two resources occupied the same grid cell.");
                     Assert.That(manager.Occupancy.TryGetOccupant(node.OccupiedCell, out UnityEngine.Object occupant), Is.True);
                     Assert.That(occupant, Is.SameAs(node));

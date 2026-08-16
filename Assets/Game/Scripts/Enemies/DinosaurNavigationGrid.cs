@@ -190,7 +190,8 @@ namespace MicroJam.Game
         private bool IsClearPoint(Vector2 point)
         {
             Vector2Int cell = worldGrid.WorldToCell(point);
-            return worldGrid.Config.IsCellInsidePlayableArea(cell) && GetBlockingBuilding(cell) == null;
+            return worldGrid.Config.IsCellInsidePlayableArea(cell) && GetBlockingBuilding(cell) == null &&
+                   !IsBlockingResource(cell);
         }
 
         public bool HasFreePath(Vector2 startWorld, Health target, float attackRange)
@@ -215,7 +216,7 @@ namespace MicroJam.Game
                 {
                     Vector2Int cell = new(x, y);
                     BuildingInstance candidateBlocker = GetBlockingBuilding(cell);
-                    if (!allowBuildingTraversal && candidateBlocker != null)
+                    if (IsBlockingResource(cell) || (!allowBuildingTraversal && candidateBlocker != null))
                     {
                         continue;
                     }
@@ -253,6 +254,7 @@ namespace MicroJam.Game
                 {
                     return true;
                 }
+                if (worldGrid.Config.IsCellInsidePlayableArea(cell) && IsBlockingResource(cell)) return true;
             }
 
             return false;
@@ -304,7 +306,7 @@ namespace MicroJam.Game
                     }
 
                     BuildingInstance blocker = GetBlockingBuilding(next);
-                    if (blocker != null && !allowBuildingTraversal)
+                    if (IsBlockingResource(next) || (blocker != null && !allowBuildingTraversal))
                     {
                         continue;
                     }
@@ -378,7 +380,7 @@ namespace MicroJam.Game
                 for (int x = -cellRadius; x <= cellRadius; x++)
                 {
                     Vector2Int candidate = turnCell + new Vector2Int(x, y);
-                    if (GetBlockingBuilding(candidate) == null) continue;
+                    if (GetBlockingBuilding(candidate) == null && !IsBlockingResource(candidate)) continue;
 
                     Vector2 buildingCenter = worldGrid.CellToWorldCenter(candidate);
                     Vector2 delta = turnCenter - buildingCenter;
@@ -466,6 +468,11 @@ namespace MicroJam.Game
             return building != null && building.BlocksDinosaur && !building.RemovalStarted ? building : null;
         }
 
+        private bool IsBlockingResource(Vector2Int cell)
+        {
+            return occupancy.TryGetOccupant(cell, out Object occupant) && occupant is ResourceNode;
+        }
+
         private Vector2Int ClampToPlayable(Vector2Int cell)
         {
             RectInt rect = worldGrid.Config.PlayableCellRect;
@@ -515,7 +522,7 @@ namespace MicroJam.Game
 
         private void OnOccupancyChanged(GridOccupancyChangedEvent change)
         {
-            if (change.Occupant is BuildingInstance)
+            if (change.Occupant is BuildingInstance || change.Occupant is ResourceNode)
             {
                 Revision++;
                 cachedBlockedTurns.Clear();
