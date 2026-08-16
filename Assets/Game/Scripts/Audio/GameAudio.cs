@@ -52,8 +52,7 @@ namespace MicroJam.Game
             if (clip == null) return;
             AudioSource source = audio.GetAvailableSource();
             if (source == null) return;
-            source.volume = audio.sfxVolume;
-            source.PlayOneShot(clip);
+            source.PlayOneShot(clip, audio.sfxVolume * audio.catalog.GetVolume(sound));
         }
 
         public static void PlayHumanAttack(IEnumerable<Health> targets)
