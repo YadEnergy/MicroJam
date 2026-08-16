@@ -9,7 +9,9 @@ namespace MicroJam.Game
     {
         None,
         Wall,
-        Door
+        Door,
+        BowTower,
+        StoneTower
     }
 
     public enum BuildPlacementStatus
@@ -22,6 +24,7 @@ namespace MicroJam.Game
         Occupied,
         DynamicOverlap,
         InsufficientWood,
+        InsufficientResources,
         Valid
     }
 
@@ -42,12 +45,16 @@ namespace MicroJam.Game
         [Header("Buildable Definitions")]
         [SerializeField] private BuildingDefinition wallDefinition;
         [SerializeField] private BuildingDefinition doorDefinition;
+        [SerializeField] private BuildingDefinition bowTowerDefinition;
+        [SerializeField] private BuildingDefinition stoneTowerDefinition;
 
         [Header("Dynamic Occupancy")]
         [SerializeField] private LayerMask dynamicOccupantLayers;
 
         private InputAction selectWallAction;
         private InputAction selectDoorAction;
+        private InputAction selectBowTowerAction;
+        private InputAction selectStoneTowerAction;
         private InputAction cancelAction;
         private InputAction placeAction;
         private InputAction pointAction;
@@ -66,6 +73,8 @@ namespace MicroJam.Game
         public Transform RuntimeBuildingParent => runtimeBuildingParent;
         public BuildingDefinition WallDefinition => wallDefinition;
         public BuildingDefinition DoorDefinition => doorDefinition;
+        public BuildingDefinition BowTowerDefinition => bowTowerDefinition;
+        public BuildingDefinition StoneTowerDefinition => stoneTowerDefinition;
         public LayerMask DynamicOccupantLayers => dynamicOccupantLayers;
         public InputActionAsset InputActions => inputActions;
         public bool HasTargetCell => hasTargetCell;
@@ -76,6 +85,8 @@ namespace MicroJam.Game
                 InputActionMap map = inputActions != null ? inputActions.FindActionMap(actionMapName, false) : null;
                 return map?.FindAction("SelectWall", false) != null &&
                        map.FindAction("SelectDoor", false) != null &&
+                       map.FindAction("SelectBowTower", false) != null &&
+                       map.FindAction("SelectStoneTower", false) != null &&
                        map.FindAction("Cancel", false) != null &&
                        map.FindAction("Place", false) != null &&
                        map.FindAction("Point", false) != null;
@@ -97,6 +108,24 @@ namespace MicroJam.Game
             BuildingDefinition configuredDoor,
             LayerMask configuredDynamicOccupants)
         {
+            Configure(configuredInput, configuredViewport, configuredGrid, configuredOccupancy, configuredWallet,
+                configuredPreview, configuredRuntimeParent, configuredWall, configuredDoor, null, null, configuredDynamicOccupants);
+        }
+
+        public void Configure(
+            InputActionAsset configuredInput,
+            SquareGameplayViewport configuredViewport,
+            WorldGridService configuredGrid,
+            GridOccupancyService configuredOccupancy,
+            PlayerResourceWallet configuredWallet,
+            BuildPlacementPreview configuredPreview,
+            Transform configuredRuntimeParent,
+            BuildingDefinition configuredWall,
+            BuildingDefinition configuredDoor,
+            BuildingDefinition configuredBowTower,
+            BuildingDefinition configuredStoneTower,
+            LayerMask configuredDynamicOccupants)
+        {
             inputActions = configuredInput;
             gameplayViewport = configuredViewport;
             worldGrid = configuredGrid;
@@ -106,6 +135,8 @@ namespace MicroJam.Game
             runtimeBuildingParent = configuredRuntimeParent;
             wallDefinition = configuredWall;
             doorDefinition = configuredDoor;
+            bowTowerDefinition = configuredBowTower;
+            stoneTowerDefinition = configuredStoneTower;
             dynamicOccupantLayers = configuredDynamicOccupants;
             ResolveActions();
             CancelBuildMode();
@@ -199,9 +230,11 @@ namespace MicroJam.Game
                 return BuildPlacementStatus.DynamicOverlap;
             }
 
-            if (playerWallet == null || !playerWallet.CanAffordWood(definition.WoodCost))
+            if (playerWallet == null || !playerWallet.CanAfford(definition.WoodCost, definition.StoneCost))
             {
-                return BuildPlacementStatus.InsufficientWood;
+                return definition.StoneCost > 0
+                    ? BuildPlacementStatus.InsufficientResources
+                    : BuildPlacementStatus.InsufficientWood;
             }
 
             return BuildPlacementStatus.Valid;
@@ -230,6 +263,15 @@ namespace MicroJam.Game
 
             Vector2Int[] cells = GetFootprintCells(anchorCell, definition.FootprintSize);
             GetFootprintWorldBounds(anchorCell, definition.FootprintSize, out Vector2 center, out _);
+            if (!playerWallet.TrySpend(definition.WoodCost, definition.StoneCost))
+            {
+                PlacementStatus = definition.StoneCost > 0
+                    ? BuildPlacementStatus.InsufficientResources
+                    : BuildPlacementStatus.InsufficientWood;
+                RefreshPreviewAfterAttempt(definition, anchorCell);
+                return false;
+            }
+
             GameObject instanceObject = Instantiate(definition.Prefab, center, Quaternion.identity, runtimeBuildingParent);
             placed = instanceObject.GetComponent<BuildingInstance>();
             if (placed == null || !placed.InitializePlacement(definition, occupancy, cells))
@@ -240,18 +282,9 @@ namespace MicroJam.Game
                 }
 
                 Destroy(instanceObject);
+                playerWallet.TryAdd(definition.WoodCost, definition.StoneCost);
                 placed = null;
                 PlacementStatus = BuildPlacementStatus.Occupied;
-                RefreshPreviewAfterAttempt(definition, anchorCell);
-                return false;
-            }
-
-            if (!playerWallet.SpendWood(definition.WoodCost))
-            {
-                placed.ReleaseOccupancy();
-                Destroy(instanceObject);
-                placed = null;
-                PlacementStatus = BuildPlacementStatus.InsufficientWood;
                 RefreshPreviewAfterAttempt(definition, anchorCell);
                 return false;
             }
@@ -291,6 +324,8 @@ namespace MicroJam.Game
             ResolveActions();
             selectWallAction?.Enable();
             selectDoorAction?.Enable();
+            selectBowTowerAction?.Enable();
+            selectStoneTowerAction?.Enable();
             cancelAction?.Enable();
             placeAction?.Enable();
             pointAction?.Enable();
@@ -300,6 +335,8 @@ namespace MicroJam.Game
         {
             selectWallAction?.Disable();
             selectDoorAction?.Disable();
+            selectBowTowerAction?.Disable();
+            selectStoneTowerAction?.Disable();
             cancelAction?.Disable();
             placeAction?.Disable();
             pointAction?.Disable();
@@ -308,6 +345,12 @@ namespace MicroJam.Game
 
         private void Update()
         {
+            if (GameplayInputGate.IsBlocked)
+            {
+                placementPreview?.Hide();
+                return;
+            }
+
             if (selectWallAction != null && selectWallAction.WasPressedThisFrame())
             {
                 SelectBuildMode(BuildSelection.Wall);
@@ -316,6 +359,16 @@ namespace MicroJam.Game
             if (selectDoorAction != null && selectDoorAction.WasPressedThisFrame())
             {
                 SelectBuildMode(BuildSelection.Door);
+            }
+
+            if (selectBowTowerAction != null && selectBowTowerAction.WasPressedThisFrame())
+            {
+                SelectBuildMode(BuildSelection.BowTower);
+            }
+
+            if (selectStoneTowerAction != null && selectStoneTowerAction.WasPressedThisFrame())
+            {
+                SelectBuildMode(BuildSelection.StoneTower);
             }
 
             if (cancelAction != null && cancelAction.WasPressedThisFrame())
@@ -342,6 +395,8 @@ namespace MicroJam.Game
         {
             selectWallAction = null;
             selectDoorAction = null;
+            selectBowTowerAction = null;
+            selectStoneTowerAction = null;
             cancelAction = null;
             placeAction = null;
             pointAction = null;
@@ -353,6 +408,8 @@ namespace MicroJam.Game
 
             selectWallAction = map.FindAction("SelectWall", false);
             selectDoorAction = map.FindAction("SelectDoor", false);
+            selectBowTowerAction = map.FindAction("SelectBowTower", false);
+            selectStoneTowerAction = map.FindAction("SelectStoneTower", false);
             cancelAction = map.FindAction("Cancel", false);
             placeAction = map.FindAction("Place", false);
             pointAction = map.FindAction("Point", false);
@@ -364,6 +421,8 @@ namespace MicroJam.Game
             {
                 BuildSelection.Wall => wallDefinition,
                 BuildSelection.Door => doorDefinition,
+                BuildSelection.BowTower => bowTowerDefinition,
+                BuildSelection.StoneTower => stoneTowerDefinition,
                 _ => null
             };
         }

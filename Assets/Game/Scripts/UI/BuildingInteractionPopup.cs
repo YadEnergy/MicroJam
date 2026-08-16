@@ -10,6 +10,7 @@ namespace MicroJam.Game
         [SerializeField] private Text removalPromptText;
         [SerializeField] private Button removeButton;
         [SerializeField] private Button closeButton;
+        [SerializeField] private UIPanelTween panelTween;
 
         private BuildingInstance target;
         private PlayerResourceWallet wallet;
@@ -20,6 +21,7 @@ namespace MicroJam.Game
         public Text RemovalPromptText => removalPromptText;
         public Button RemoveButton => removeButton;
         public Button CloseButton => closeButton;
+        public UIPanelTween PanelTween => panelTween;
         public bool IsOpen => gameObject.activeSelf;
 
         public void Configure(Text configuredTitle, Text configuredHealth, Text configuredPrompt, Button configuredRemove, Button configuredClose)
@@ -31,13 +33,16 @@ namespace MicroJam.Game
             closeButton = configuredClose;
         }
 
+        public void ConfigureTween(UIPanelTween tween) => panelTween = tween;
+
         public void Open(BuildingInstance building, PlayerResourceWallet playerWallet)
         {
             UnsubscribeTarget();
             target = building;
             wallet = playerWallet;
             SubscribeTarget();
-            gameObject.SetActive(true);
+            if (panelTween != null) panelTween.Show();
+            else gameObject.SetActive(true);
             Refresh();
         }
 
@@ -46,10 +51,8 @@ namespace MicroJam.Game
             UnsubscribeTarget();
             target = null;
             wallet = null;
-            if (gameObject.activeSelf)
-            {
-                gameObject.SetActive(false);
-            }
+            if (panelTween != null) panelTween.Hide();
+            else if (gameObject.activeSelf) gameObject.SetActive(false);
         }
 
         public bool RemoveSelectedBuilding()
@@ -79,7 +82,7 @@ namespace MicroJam.Game
 
             if (removalPromptText != null)
             {
-                removalPromptText.text = valid ? $"Remove this building?\nRefund: {target.RemovalRefundWood} Wood" : "This building no longer exists.";
+                removalPromptText.text = valid ? BuildRefundText(target) : "This building no longer exists.";
             }
 
             if (removeButton != null)
@@ -133,5 +136,14 @@ namespace MicroJam.Game
         private void HandleHealthChanged(HealthChangedEvent _) => Refresh();
         private void HandleBuildingRemoving(BuildingRemovalEvent _) => Close();
         private static string FormatHealth(float value) => Mathf.CeilToInt(value).ToString();
+
+        private static string BuildRefundText(BuildingInstance building)
+        {
+            int wood = building.RemovalRefundWood;
+            int stone = building.RemovalRefundStone;
+            if (stone <= 0) return $"Remove this building?\nRefund: {wood} Wood";
+            if (wood <= 0) return $"Remove this building?\nRefund: {stone} Stone";
+            return $"Remove this building?\nRefund: {wood} Wood + {stone} Stone";
+        }
     }
 }

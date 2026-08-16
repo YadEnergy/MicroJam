@@ -162,6 +162,8 @@ namespace MicroJam.Game
 
         private void Update()
         {
+            if (GameplayInputGate.IsBlocked) return;
+
             if (suppressInteractionUntilRelease)
             {
                 if (interactAction == null || !interactAction.IsPressed())

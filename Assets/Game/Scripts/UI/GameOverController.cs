@@ -12,6 +12,8 @@ namespace MicroJam.Game
         [SerializeField] private GameObject endedInfoPanel;
         [SerializeField] private TMP_Text endedInfoText;
         [SerializeField] private Button restartButton;
+        [SerializeField] private UIPanelTween endedPanelTween;
+        [SerializeField] private SceneTransitionController sceneTransition;
 
         private bool gameEnded;
 
@@ -21,10 +23,8 @@ namespace MicroJam.Game
             PlayerPoints.Reset();
             dayNightCycle ??= FindFirstObjectByType<DayNightCycle>();
 
-            if (endedInfoPanel != null)
-            {
-                endedInfoPanel.SetActive(false);
-            }
+            if (endedPanelTween != null) endedPanelTween.SetHiddenImmediate();
+            else if (endedInfoPanel != null) endedInfoPanel.SetActive(false);
         }
 
         private void OnEnable()
@@ -59,18 +59,28 @@ namespace MicroJam.Game
                 endedInfoText.text = $"Days survived: {daysSurvived} days\nPoints: {PlayerPoints.Current}";
             }
 
-            if (endedInfoPanel != null)
-            {
-                endedInfoPanel.SetActive(true);
-            }
+            if (endedPanelTween != null) endedPanelTween.Show();
+            else if (endedInfoPanel != null) endedInfoPanel.SetActive(true);
 
             Time.timeScale = 0f;
         }
 
         public void RestartGame()
         {
+            if (sceneTransition != null)
+            {
+                sceneTransition.LoadScene(SceneManager.GetActiveScene().name);
+                return;
+            }
+
             Time.timeScale = 1f;
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+
+        public void ConfigureTween(UIPanelTween panelTween, SceneTransitionController transition)
+        {
+            endedPanelTween = panelTween;
+            sceneTransition = transition;
         }
     }
 }

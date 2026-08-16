@@ -10,11 +10,13 @@ namespace MicroJam.Game
         [SerializeField] private bool initializeAtMaxOnAwake = true;
 
         private bool isDead;
+        private bool isInvulnerable;
 
         public float MaxHealth => maxHealth;
         public float CurrentHealth => currentHealth;
         public float NormalizedHealth => maxHealth > 0f ? currentHealth / maxHealth : 0f;
         public bool IsDead => isDead;
+        public bool IsInvulnerable => isInvulnerable;
 
         public event Action<HealthChangedEvent> HealthChanged;
         public event Action<DamageReceivedEvent> DamageReceived;
@@ -32,7 +34,7 @@ namespace MicroJam.Game
         public bool TryTakeDamage(DamageContext context, out float appliedDamage)
         {
             appliedDamage = 0f;
-            if (isDead || !IsPositiveFinite(context.Amount) || !HasValidState())
+            if (isDead || isInvulnerable || !IsPositiveFinite(context.Amount) || !HasValidState())
             {
                 return false;
             }
@@ -82,6 +84,8 @@ namespace MicroJam.Game
         }
 
         public bool TryHeal(float requestedAmount) => TryHeal(requestedAmount, out _);
+
+        public void SetInvulnerable(bool value) => isInvulnerable = value;
 
         public void ResetHealth()
         {
