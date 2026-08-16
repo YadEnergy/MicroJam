@@ -47,11 +47,14 @@ namespace MicroJam.Game.Tests
             Assert.That(wall.Health.TryTakeDamage(new DamageContext(5f, source)), Is.True);
             Assert.That(controller.BuildingPopup.HealthText.text, Does.Contain("145 / 150"), "Building popup did not react to HealthChanged.");
 
+            CampfireInteraction openedCampfire = null;
+            controller.CampfireOpened += opened => openedCampfire = opened;
             Vector2 campfireScreen = Camera.main.WorldToScreenPoint(campfire.transform.position);
             Assert.That(controller.TryInteractAtScreen(campfireScreen), Is.True);
             Assert.That(controller.OpenPopupType, Is.EqualTo(WorldInteractionPopupType.Campfire));
             Assert.That(controller.BuildingPopup.IsOpen, Is.False);
             Assert.That(controller.CampfirePopup.Target, Is.SameAs(campfire));
+            Assert.That(openedCampfire, Is.SameAs(campfire), "Opening the Campfire did not notify tutorial listeners.");
 
             Assert.That(controller.TryInteractAtScreen(wallScreen, true), Is.False, "A UI-owned click passed through into the world.");
             Assert.That(controller.OpenPopupType, Is.EqualTo(WorldInteractionPopupType.Campfire));

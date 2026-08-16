@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -13,6 +14,8 @@ namespace MicroJam.Game
 
     public sealed class WorldInteractionController : MonoBehaviour
     {
+        public event Action<CampfireInteraction> CampfireOpened;
+
         [SerializeField] private InputActionAsset inputActions;
         [SerializeField] private string actionMapName = "WorldInteraction";
         [SerializeField] private BuildingSystem buildingSystem;
@@ -118,6 +121,7 @@ namespace MicroJam.Game
             if (campfire != null)
             {
                 campfirePopup?.Open(campfire, playerWallet);
+                CampfireOpened?.Invoke(campfire);
             }
         }
 

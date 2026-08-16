@@ -20,6 +20,7 @@ namespace MicroJam.Game
             GatherWood,
             GatherStone,
             CampfireGoal,
+            OpenCampfireRepair,
             SelectWall,
             PlaceWall,
             SelectDoor,
@@ -43,6 +44,7 @@ namespace MicroJam.Game
         private BuildingSystem buildingSystem;
         private BuildHotbarHintsUI buildHotbar;
         private DayNightCycle dayNightCycle;
+        private WorldInteractionController worldInteraction;
         private Step currentStep;
         private Vector2 movementStart;
         private float stepEndsAt;
@@ -56,6 +58,7 @@ namespace MicroJam.Game
             buildingSystem = FindFirstObjectByType<BuildingSystem>();
             buildHotbar = FindFirstObjectByType<BuildHotbarHintsUI>();
             dayNightCycle = FindFirstObjectByType<DayNightCycle>();
+            worldInteraction = FindFirstObjectByType<WorldInteractionController>();
 
             if (HasCompletedTutorial())
             {
@@ -90,6 +93,11 @@ namespace MicroJam.Game
                 buildingSystem.SelectionChanged += HandleSelectionChanged;
                 buildingSystem.BuildingPlaced += HandleBuildingPlaced;
             }
+
+            if (worldInteraction != null)
+            {
+                worldInteraction.CampfireOpened += HandleCampfireOpened;
+            }
         }
 
         private void Start() => ShowStep(Step.Move);
@@ -111,6 +119,11 @@ namespace MicroJam.Game
             {
                 buildingSystem.SelectionChanged -= HandleSelectionChanged;
                 buildingSystem.BuildingPlaced -= HandleBuildingPlaced;
+            }
+
+            if (worldInteraction != null)
+            {
+                worldInteraction.CampfireOpened -= HandleCampfireOpened;
             }
 
             foreach (BuildingInstance building in tutorialBuildings)
@@ -187,6 +200,14 @@ namespace MicroJam.Game
             }
         }
 
+        private void HandleCampfireOpened(CampfireInteraction _)
+        {
+            if (currentStep == Step.OpenCampfireRepair)
+            {
+                Advance();
+            }
+        }
+
         private void HandleBuildingPlaced(BuildingInstance building)
         {
             if (building == null || building.Definition == null)
@@ -245,6 +266,9 @@ namespace MicroJam.Game
                 case Step.CampfireGoal:
                     SetMessage("Protect the campfire: dinosaurs are coming straight for it.");
                     stepEndsAt = Time.time + campfireMessageDuration;
+                    break;
+                case Step.OpenCampfireRepair:
+                    SetMessage("Click the campfire to open its repair menu. Spend wood to restore lost HP.");
                     break;
                 case Step.SelectWall:
                     buildHotbar?.SetTutorialHighlight(BuildSelection.Wall);
