@@ -320,8 +320,8 @@ MonoBehaviour:
   fillRenderer: {fileID: 1829160298218633173}
   fillTransform: {fileID: 3173601132119705999}
   barSize: {x: 2.4, y: 0.18}
-  preserveAuthoredVisuals: 0
-  authoredFullFillScale: {x: 1, y: 0.12, z: 1}
+  preserveAuthoredVisuals: 1
+  authoredFullFillScale: {x: 2.4, y: 0.18, z: 1}
   authoredFullFillPosition: {x: 0, y: 0, z: -0.01}
 --- !u!1 &3549376343069111519
 GameObject:

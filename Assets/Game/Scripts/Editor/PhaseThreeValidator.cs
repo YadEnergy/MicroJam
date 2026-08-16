@@ -103,7 +103,8 @@ namespace MicroJam.Game.Editor
             Require(facing != null && facing.GameplayViewport == null, "Prefab PlayerFacing viewport must remain scene-bound rather than referencing a scene object.", failures);
             Require(facingRoot != null && indicator != null && combatRoot != null && attackOrigin != null && feedback != null, "Player prefab-facing/combat child hierarchy is incomplete.", failures);
             Require(facingRoot != null && facingRoot.gameObject.layer == LayerMask.NameToLayer("Ignore Raycast"), "FacingRoot must not intercept pointing.", failures);
-            Require(indicator != null && indicator.GetComponent<SpriteRenderer>() != null && indicator.GetComponent<SpriteRenderer>().enabled, "Facing indicator must be a visible prefab-bound SpriteRenderer.", failures);
+            Require(indicator != null && indicator.GetComponent<SpriteRenderer>() != null && !indicator.gameObject.activeSelf,
+                "Facing indicator must remain prefab-bound but disabled.", failures);
             Require(combat != null && combat.Health == health && combat.Facing == facing, "PlayerCombat references are invalid.", failures);
             Require(combat != null && combat.AttackOrigin == attackOrigin && combat.AttackFeedback == feedback, "PlayerCombat child references are invalid.", failures);
             Require(combat != null && Mathf.Approximately(combat.AttackDamage, 5f), "Melee damage must be 5.", failures);
@@ -112,7 +113,7 @@ namespace MicroJam.Game.Editor
             Require(combat != null && Mathf.Approximately(combat.AttackCooldown, 0.4f), "Melee cooldown must be 0.4 seconds.", failures);
             int expectedMask = (1 << GameLayers.DinosaurIndex) | (1 << GameLayers.ResourceIndex);
             Require(combat != null && combat.TargetLayers.value == expectedMask, "Melee target mask must contain only Dinosaur and Resource.", failures);
-            Require(feedback != null && !feedback.enabled, "Attack placeholder feedback must start hidden.", failures);
+            Require(feedback != null && !feedback.gameObject.activeSelf, "Attack placeholder feedback must remain prefab-bound but disabled.", failures);
             Require(wallet != null && wallet.StartingWood == 20 && wallet.StartingStone == 20 && wallet.Wood == 20 && wallet.Stone == 20, "Resource wallet must start with 20 Wood and 20 Stone.", failures);
             Require(input != null && input.InputActions != null && input.Movement == movement && input.Facing == facing && input.Combat == combat, "PlayerInputController references are invalid.", failures);
             Require(input != null && input.HasValidActions, "PlayerInputController could not resolve Player/Move and Player/Attack.", failures);

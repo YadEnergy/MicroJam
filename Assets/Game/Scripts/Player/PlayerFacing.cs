@@ -7,6 +7,8 @@ namespace MicroJam.Game
         [SerializeField] private Health health;
         [SerializeField] private SquareGameplayViewport gameplayViewport;
         [SerializeField] private Transform facingVisualRoot;
+        [SerializeField] private Transform characterVisualRoot;
+        [SerializeField] private float characterRotationOffset = 90f;
         [SerializeField] private Vector2 initialFacingDirection = Vector2.right;
         [SerializeField, Min(0f)] private float minimumDirectionDistance = 0.01f;
 
@@ -66,6 +68,10 @@ namespace MicroJam.Game
             {
                 float angle = Mathf.Atan2(facingDirection.y, facingDirection.x) * Mathf.Rad2Deg;
                 facingVisualRoot.localRotation = Quaternion.Euler(0f, 0f, angle);
+                if (characterVisualRoot != null)
+                {
+                    characterVisualRoot.localRotation = Quaternion.Euler(0f, 0f, angle + characterRotationOffset);
+                }
             }
 
             return true;

@@ -255,6 +255,7 @@ GameObject:
   - component: {fileID: 5508165760826497749}
   - component: {fileID: 262025348273851017}
   - component: {fileID: 3874712706895021106}
+  - component: {fileID: 3874712706895021107}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -388,6 +389,8 @@ MonoBehaviour:
   health: {fileID: 7973791243185992181}
   gameplayViewport: {fileID: 0}
   facingVisualRoot: {fileID: 1263036565992599015}
+  characterVisualRoot: {fileID: 3415745584666019984}
+  characterRotationOffset: 90
   initialFacingDirection: {x: 1, y: 0}
   minimumDirectionDistance: 0.01
 --- !u!114 &5508165760826497749
@@ -452,6 +455,24 @@ MonoBehaviour:
   movement: {fileID: 1469420777913150002}
   facing: {fileID: 9174344091747533222}
   combat: {fileID: 5508165760826497749}
+--- !u!114 &3874712706895021107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1057224197468211155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29ab120642b44a838841c95f8c1e75dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.PlayerAnimationController
+  animator: {fileID: 8976009891285372471}
+  movement: {fileID: 1469420777913150002}
+  combat: {fileID: 5508165760826497749}
+  health: {fileID: 7973791243185992181}
+  crossFadeDuration: 0.05
+  attackAnimationDuration: 0.43
 --- !u!1 &1264054674213029024
 GameObject:
   m_ObjectHideFlags: 0
@@ -690,7 +711,7 @@ Transform:
   m_GameObject: {fileID: 4288238232662356571}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.35, y: 0, z: 0}
+  m_LocalPosition: {x: 0.161, y: 0.202, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -712,7 +733,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7876841989910252566
 Transform:
   m_ObjectHideFlags: 0
@@ -803,7 +824,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7244079822654031714
 Transform:
   m_ObjectHideFlags: 0

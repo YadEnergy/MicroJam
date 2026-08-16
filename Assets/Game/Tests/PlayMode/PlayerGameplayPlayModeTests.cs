@@ -164,9 +164,9 @@ namespace MicroJam.Game.Tests
             Assert.That(excludedHealth.CurrentHealth, Is.EqualTo(100f), "Building/Wall layer must be excluded from Player melee.");
             Assert.That(firstBar.IsVisible, Is.True, "Existing show-after-damage health bar must respond to melee damage.");
             Assert.That(secondBar.IsVisible, Is.True);
-            Assert.That(combat.AttackFeedback.enabled, Is.True, "Prefab-bound attack feedback must flash on attack.");
+            Assert.That(combat.AttackFeedback.gameObject.activeSelf, Is.False, "Legacy attack indicator must stay disabled; the attack animation is the feedback.");
             yield return new WaitForSeconds(0.1f);
-            Assert.That(combat.AttackFeedback.enabled, Is.False);
+            Assert.That(combat.AttackFeedback.gameObject.activeSelf, Is.False);
 
             yield return new WaitForSeconds(0.31f);
             int attackEvents = 0;

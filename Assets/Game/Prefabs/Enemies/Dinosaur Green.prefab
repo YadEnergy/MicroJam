@@ -350,7 +350,7 @@ MonoBehaviour:
   fillRenderer: {fileID: 2443513977422888642}
   fillTransform: {fileID: 3737490428351327432}
   barSize: {x: 1, y: 0.12}
-  preserveAuthoredVisuals: 0
+  preserveAuthoredVisuals: 1
   authoredFullFillScale: {x: 1, y: 0.12, z: 1}
   authoredFullFillPosition: {x: 0, y: 0, z: -0.01}
 --- !u!1 &5493990825861141337
@@ -677,7 +677,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8300000000000000005
 Transform:
   m_ObjectHideFlags: 0

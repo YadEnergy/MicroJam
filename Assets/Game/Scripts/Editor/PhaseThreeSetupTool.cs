@@ -76,6 +76,7 @@ namespace MicroJam.Game.Editor
                 indicator.color = new Color(0.15f, 0.9f, 1f, 0.95f);
                 indicator.sortingOrder = 12;
                 indicator.enabled = true;
+                indicatorObject.SetActive(false);
 
                 GameObject combatObject = FindOrCreateChild(facingRoot, "Combat", visualLayer);
                 ResetLocalTransform(combatObject.transform);
@@ -92,6 +93,7 @@ namespace MicroJam.Game.Editor
                 feedback.color = new Color(1f, 0.72f, 0.1f, 0.62f);
                 feedback.sortingOrder = 11;
                 feedback.enabled = false;
+                feedbackObject.SetActive(false);
 
                 movement.Configure(body, health, 5f);
                 facing.Configure(health, null, facingRoot, Vector2.right);

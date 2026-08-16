@@ -713,6 +713,6 @@ MonoBehaviour:
   fillRenderer: {fileID: 94497956185689467}
   fillTransform: {fileID: 5614441888480736333}
   barSize: {x: 1.8, y: 0.14}
-  preserveAuthoredVisuals: 0
-  authoredFullFillScale: {x: 1, y: 0.12, z: 1}
+  preserveAuthoredVisuals: 1
+  authoredFullFillScale: {x: 1.8, y: 0.14, z: 1}
   authoredFullFillPosition: {x: 0, y: 0, z: -0.01}
