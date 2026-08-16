@@ -19,6 +19,8 @@ namespace MicroJam.Game
         HumanDeath,
         HumanSteps,
         CampfireHitting,
-        CampfireBurning
+        CampfireBurning,
+        DayToNight,
+        NightToDay
     }
 }

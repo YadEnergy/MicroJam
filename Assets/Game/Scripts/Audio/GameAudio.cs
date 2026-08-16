@@ -18,6 +18,8 @@ namespace MicroJam.Game
         private float nextDinosaurStepTime;
         private DayNightCycle observedDayNightCycle;
         private bool currentMusicIsNight;
+        private bool hasObservedDayState;
+        private bool observedIsDay;
 
         public static float SfxVolume => Instance != null ? Instance.sfxVolume : 1f;
         public static float MusicVolume => Instance != null ? Instance.musicVolume : 1f;
@@ -62,6 +64,8 @@ namespace MicroJam.Game
         {
             DayNightCycle cycle = FindFirstObjectByType<DayNightCycle>();
             ObserveDayNightCycle(cycle);
+            hasObservedDayState = cycle != null;
+            observedIsDay = cycle == null || cycle.IsDay;
             PlayCatalogMusic(cycle != null && !cycle.IsDay);
         }
 
@@ -70,9 +74,20 @@ namespace MicroJam.Game
             if (observedDayNightCycle != null) observedDayNightCycle.DayStateChanged -= HandleDayStateChanged;
             observedDayNightCycle = cycle;
             if (observedDayNightCycle != null) observedDayNightCycle.DayStateChanged += HandleDayStateChanged;
+            else hasObservedDayState = false;
         }
 
-        private void HandleDayStateChanged(bool isDay) => PlayCatalogMusic(!isDay);
+        private void HandleDayStateChanged(bool isDay)
+        {
+            if (hasObservedDayState && observedIsDay != isDay)
+            {
+                Play(isDay ? GameSound.NightToDay : GameSound.DayToNight);
+            }
+
+            observedIsDay = isDay;
+            hasObservedDayState = true;
+            PlayCatalogMusic(!isDay);
+        }
 
         private void PlayCatalogMusic(bool night)
         {

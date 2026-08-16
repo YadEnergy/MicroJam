@@ -16,6 +16,12 @@ namespace MicroJam.Game
         [SerializeField] private AudioClip nightMusic;
         [SerializeField, Range(0f, 1f)] private float nightMusicVolume = 1f;
 
+        [Header("Day / Night Transitions")]
+        [SerializeField] private AudioClip dayToNight;
+        [SerializeField, Range(0f, 1f)] private float dayToNightVolume = 1f;
+        [SerializeField] private AudioClip nightToDay;
+        [SerializeField, Range(0f, 1f)] private float nightToDayVolume = 1f;
+
         [Header("Buildings")]
         [SerializeField] private AudioClip buildStructure;
         [SerializeField, Range(0f, 1f)] private float buildStructureVolume = 1f;
@@ -88,6 +94,8 @@ namespace MicroJam.Game
                 GameSound.HumanSteps => humanSteps,
                 GameSound.CampfireHitting => campfireHitting,
                 GameSound.CampfireBurning => campfireBurning,
+                GameSound.DayToNight => dayToNight,
+                GameSound.NightToDay => nightToDay,
                 _ => null
             };
         }
@@ -114,6 +122,8 @@ namespace MicroJam.Game
                 GameSound.HumanSteps => humanStepsVolume,
                 GameSound.CampfireHitting => campfireHittingVolume,
                 GameSound.CampfireBurning => campfireBurningVolume,
+                GameSound.DayToNight => dayToNightVolume,
+                GameSound.NightToDay => nightToDayVolume,
                 _ => 1f
             };
         }
