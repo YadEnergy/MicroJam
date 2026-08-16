@@ -167,8 +167,8 @@ namespace MicroJam.Game.Editor
             GameObject interactionRoot = FindOrCreateRectChild(ui, "WorldInteraction", uiLayer);
             Stretch(interactionRoot.GetComponent<RectTransform>());
             Canvas canvas = GetOrAdd<Canvas>(interactionRoot);
-            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvas.worldCamera = null;
+            canvas.renderMode = RenderMode.ScreenSpaceCamera;
+            canvas.worldCamera = viewport.GetComponent<Camera>();
             canvas.overrideSorting = true;
             canvas.sortingOrder = 100;
             CanvasScaler scaler = GetOrAdd<CanvasScaler>(interactionRoot);
