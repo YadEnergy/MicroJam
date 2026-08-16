@@ -376,7 +376,7 @@ GameObject:
   - component: {fileID: 7368752122449935101}
   - component: {fileID: 4011219103371351612}
   m_Layer: 7
-  m_Name: Dinosaur C
+  m_Name: Dinosaur Red
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -511,6 +511,9 @@ MonoBehaviour:
   visual: {fileID: 3759251342161622500}
   moveSpeed: 2.5
   waypointTolerance: 0.08
+  pushResistanceMass: 100
+  playerAvoidanceDistance: 0.8
+  avoidanceForwardWeight: 0.45
 --- !u!114 &7368752122449935101
 MonoBehaviour:
   m_ObjectHideFlags: 0

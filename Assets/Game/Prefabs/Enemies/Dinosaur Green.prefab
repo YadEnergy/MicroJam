@@ -82,7 +82,7 @@ SpriteRenderer:
   m_SortingOrder: 10
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2413806693520163455, guid: 4fea85816b439804ca62d7734443bc8e, type: 3}
-  m_Color: {r: 0.65, g: 0.2, b: 0.75, a: 1}
+  m_Color: {r: 0.8583699, g: 0.4672481, b: 0.9433962, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -376,7 +376,7 @@ GameObject:
   - component: {fileID: 7368752122449935101}
   - component: {fileID: 4011219103371351612}
   m_Layer: 7
-  m_Name: Dinosaur A
+  m_Name: Dinosaur Green
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -494,7 +494,7 @@ MonoBehaviour:
   movement: {fileID: 5990775089936957884}
   attack: {fileID: 7368752122449935101}
   targeting: {fileID: 4011219103371351612}
-  spawnCost: 1
+  spawnCost: 2
 --- !u!114 &5990775089936957884
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -511,6 +511,9 @@ MonoBehaviour:
   visual: {fileID: 3759251342161622500}
   moveSpeed: 2.5
   waypointTolerance: 0.08
+  pushResistanceMass: 100
+  playerAvoidanceDistance: 0.8
+  avoidanceForwardWeight: 0.45
 --- !u!114 &7368752122449935101
 MonoBehaviour:
   m_ObjectHideFlags: 0
