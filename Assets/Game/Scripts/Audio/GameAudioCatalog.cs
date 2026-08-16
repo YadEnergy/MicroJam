@@ -25,8 +25,6 @@ namespace MicroJam.Game
         [SerializeField, Range(0f, 1f)] private float dinosaurDeathVolume = 1f;
         [SerializeField] private AudioClip dinosaurHitBuilding;
         [SerializeField, Range(0f, 1f)] private float dinosaurHitBuildingVolume = 1f;
-        [SerializeField] private AudioClip dinosaurHitCampfire;
-        [SerializeField, Range(0f, 1f)] private float dinosaurHitCampfireVolume = 1f;
         [SerializeField] private AudioClip dinosaurHitPlayer;
         [SerializeField, Range(0f, 1f)] private float dinosaurHitPlayerVolume = 1f;
         [SerializeField] private AudioClip dinosaurMiss;
@@ -50,6 +48,12 @@ namespace MicroJam.Game
         [SerializeField] private AudioClip humanSteps;
         [SerializeField, Range(0f, 1f)] private float humanStepsVolume = 1f;
 
+        [Header("Campfire")]
+        [SerializeField] private AudioClip campfireHitting;
+        [SerializeField, Range(0f, 1f)] private float campfireHittingVolume = 1f;
+        [SerializeField] private AudioClip campfireBurning;
+        [SerializeField, Range(0f, 1f)] private float campfireBurningVolume = 1f;
+
         public AudioMixerGroup SoundEffectsOutput => soundEffectsOutput;
         public AudioMixerGroup MusicOutput => musicOutput;
 
@@ -63,7 +67,6 @@ namespace MicroJam.Game
                 GameSound.DestroyTower => destroyTower != null ? destroyTower : destroyStructure,
                 GameSound.DinosaurDeath => dinosaurDeath,
                 GameSound.DinosaurHitBuilding => dinosaurHitBuilding,
-                GameSound.DinosaurHitCampfire => dinosaurHitCampfire != null ? dinosaurHitCampfire : dinosaurHitBuilding,
                 GameSound.DinosaurHitPlayer => dinosaurHitPlayer,
                 GameSound.DinosaurMiss => dinosaurMiss,
                 GameSound.DinosaurWalk => dinosaurWalk,
@@ -74,6 +77,8 @@ namespace MicroJam.Game
                 GameSound.HumanMiss => humanMiss,
                 GameSound.HumanDeath => humanDeath,
                 GameSound.HumanSteps => humanSteps,
+                GameSound.CampfireHitting => campfireHitting,
+                GameSound.CampfireBurning => campfireBurning,
                 _ => null
             };
         }
@@ -88,7 +93,6 @@ namespace MicroJam.Game
                 GameSound.DestroyTower => destroyTower != null ? destroyTowerVolume : destroyStructureVolume,
                 GameSound.DinosaurDeath => dinosaurDeathVolume,
                 GameSound.DinosaurHitBuilding => dinosaurHitBuildingVolume,
-                GameSound.DinosaurHitCampfire => dinosaurHitCampfire != null ? dinosaurHitCampfireVolume : dinosaurHitBuildingVolume,
                 GameSound.DinosaurHitPlayer => dinosaurHitPlayerVolume,
                 GameSound.DinosaurMiss => dinosaurMissVolume,
                 GameSound.DinosaurWalk => dinosaurWalkVolume,
@@ -99,6 +103,8 @@ namespace MicroJam.Game
                 GameSound.HumanMiss => humanMissVolume,
                 GameSound.HumanDeath => humanDeathVolume,
                 GameSound.HumanSteps => humanStepsVolume,
+                GameSound.CampfireHitting => campfireHittingVolume,
+                GameSound.CampfireBurning => campfireBurningVolume,
                 _ => 1f
             };
         }

@@ -16,17 +16,17 @@ MonoBehaviour:
   musicOutput: {fileID: -5134826909940900463, guid: 454a2c69a6069fa498fdde9ec715e718, type: 2}
   buildStructure: {fileID: 8300000, guid: d9613be6188dfbf4da564301a0e58229, type: 3}
   buildStructureVolume: 1
-  buildTower: {fileID: 0}
+  buildTower: {fileID: 8300000, guid: af57ead2fd712234d83bb29d464b91cf, type: 3}
   buildTowerVolume: 1
   destroyStructure: {fileID: 8300000, guid: 308ad7d31ed1f1a43bd8e0be6e3a26b5, type: 3}
   destroyStructureVolume: 1
-  destroyTower: {fileID: 0}
+  destroyTower: {fileID: 8300000, guid: 0362feedbb57d984684f2d13578438ab, type: 3}
   destroyTowerVolume: 1
   dinosaurDeath: {fileID: 8300000, guid: b5eb61cee42d21e4c979f4fdb84eacff, type: 3}
   dinosaurDeathVolume: 1
   dinosaurHitBuilding: {fileID: 8300000, guid: 68f7a881bb6af44468d6a2b679f8040a, type: 3}
   dinosaurHitBuildingVolume: 1
-  dinosaurHitCampfire: {fileID: 0}
+  dinosaurHitCampfire: {fileID: 8300000, guid: bd33d72ea60f436449d41ad738ac2f0f, type: 3}
   dinosaurHitCampfireVolume: 1
   dinosaurHitPlayer: {fileID: 8300000, guid: 22316ec9bb6407243b6986c537f66d02, type: 3}
   dinosaurHitPlayerVolume: 1
@@ -40,11 +40,11 @@ MonoBehaviour:
   humanHitBushVolume: 1
   humanHitRock: {fileID: 8300000, guid: a002265491eb83f46880f9377884c83a, type: 3}
   humanHitRockVolume: 1
-  humanHitTree: {fileID: 0}
+  humanHitTree: {fileID: 8300000, guid: 69da9cc5bcb098f4390fd31a53c145f7, type: 3}
   humanHitTreeVolume: 1
   humanMiss: {fileID: 8300000, guid: 787e538ac1ae08445aaa417822de7f4b, type: 3}
   humanMissVolume: 1
-  humanDeath: {fileID: 0}
+  humanDeath: {fileID: 8300000, guid: 0469806dda8b7e74a91c3850a3009cac, type: 3}
   humanDeathVolume: 1
   humanSteps: {fileID: 8300000, guid: d53e1b104fe2b8b4b9a6677ab6a2ff9f, type: 3}
   humanStepsVolume: 1

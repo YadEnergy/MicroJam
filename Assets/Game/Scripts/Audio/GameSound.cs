@@ -18,6 +18,8 @@ namespace MicroJam.Game
         HumanHitTree,
         HumanMiss,
         HumanDeath,
-        HumanSteps
+        HumanSteps,
+        CampfireHitting,
+        CampfireBurning
     }
 }
