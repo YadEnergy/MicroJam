@@ -19,6 +19,8 @@ namespace MicroJam.Game
         public bool IsDay => isDay;
         public bool IsDayCountdownActive => isDayCountdownActive;
         public float DaySecondsRemaining => isDayCountdownActive ? Mathf.Max(0f, dayEndsAt - Time.time) : 0f;
+        public float DayProgress01 => !isDay ? 1f :
+            isDayCountdownActive ? 1f - Mathf.Clamp01(DaySecondsRemaining / dayDuration) : 0f;
         public int CurrentDayNumber => currentDayNumber;
         public event Action<bool> DayStateChanged;
 

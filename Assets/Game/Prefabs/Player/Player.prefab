@@ -383,7 +383,7 @@ MonoBehaviour:
   facing: {fileID: 9174344091747533222}
   attackOrigin: {fileID: 4497850043861894336}
   attackFeedback: {fileID: 5146212878904047161}
-  attackDamage: 5
+  attackDamage: 10
   attackRange: 1.5
   attackArcDegrees: 90
   attackCooldown: 0.4
