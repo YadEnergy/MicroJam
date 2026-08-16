@@ -52,5 +52,5 @@ MonoBehaviour:
   humanStepsVolume: 1
   campfireHitting: {fileID: 8300000, guid: bd33d72ea60f436449d41ad738ac2f0f, type: 3}
   campfireHittingVolume: 1
-  campfireBurning: {fileID: 0}
+  campfireBurning: {fileID: 8300000, guid: c9903763b24a82543ab5a0b8fc12958f, type: 3}
   campfireBurningVolume: 1
