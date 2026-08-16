@@ -99,7 +99,7 @@ namespace MicroJam.Game.Tests
             Assert.That(Physics2D.GetIgnoreLayerCollision(GameLayers.PlayerIndex, GameLayers.BuildingIndex), Is.False);
             Assert.That(Physics2D.GetIgnoreLayerCollision(GameLayers.PlayerIndex, GameLayers.WorldBoundaryIndex), Is.False);
             Assert.That(Physics2D.GetIgnoreLayerCollision(GameLayers.PlayerIndex, GameLayers.DoorIndex), Is.True);
-            Assert.That(Physics2D.GetIgnoreLayerCollision(GameLayers.PlayerIndex, GameLayers.ResourceIndex), Is.True);
+            Assert.That(Physics2D.GetIgnoreLayerCollision(GameLayers.PlayerIndex, GameLayers.ResourceIndex), Is.False);
             LogAssert.NoUnexpectedReceived();
         }
 

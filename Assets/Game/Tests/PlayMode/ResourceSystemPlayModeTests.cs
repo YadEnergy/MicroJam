@@ -197,7 +197,7 @@ namespace MicroJam.Game.Tests
                     Assert.That(node.IsReplacementSpawn, Is.False);
                     Assert.That(node.Health.CurrentHealth, Is.EqualTo(node.Health.MaxHealth));
                     Assert.That(node.GetComponentInChildren<HealthBar>(true).IsVisible, Is.False);
-                    Assert.That(node.GetComponent<Collider2D>().isTrigger, Is.True);
+                    Assert.That(node.GetComponent<Collider2D>().isTrigger, Is.False);
                     Assert.That(manager.WorldGrid.Config.IsCellInsidePlayableArea(node.OccupiedCell), Is.True);
                     Assert.That(manager.WorldGrid.Config.ProtectedCampfireCellRect.Contains(node.OccupiedCell), Is.False);
                     Vector2 expectedPosition = manager.WorldGrid.CellToWorldCenter(node.OccupiedCell);

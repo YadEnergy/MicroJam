@@ -120,8 +120,8 @@ namespace MicroJam.Game.Editor
             Require(!Ignored(GameLayers.DinosaurIndex, GameLayers.BuildingIndex), "Dinosaur must collide with Wall/Campfire.", failures);
             Require(Ignored(GameLayers.PlayerIndex, GameLayers.DoorIndex), "Player must pass through Door.", failures);
             Require(!Ignored(GameLayers.DinosaurIndex, GameLayers.DoorIndex), "Dinosaur must collide with Door.", failures);
-            Require(Ignored(GameLayers.PlayerIndex, GameLayers.ResourceIndex), "Player must pass through Resource.", failures);
-            Require(Ignored(GameLayers.DinosaurIndex, GameLayers.ResourceIndex), "Dinosaur must pass through Resource.", failures);
+            Require(!Ignored(GameLayers.PlayerIndex, GameLayers.ResourceIndex), "Player must collide with Resource.", failures);
+            Require(!Ignored(GameLayers.DinosaurIndex, GameLayers.ResourceIndex), "Dinosaur must collide with and navigate around Resource.", failures);
             Require(!Ignored(GameLayers.PlayerIndex, GameLayers.WorldBoundaryIndex), "Player must collide with WorldBoundary.", failures);
             Require(!Ignored(GameLayers.DinosaurIndex, GameLayers.WorldBoundaryIndex), "Dinosaur must collide with WorldBoundary.", failures);
         }
@@ -254,7 +254,7 @@ namespace MicroJam.Game.Editor
 
             Collider2D collider = prefab.GetComponent<Collider2D>();
             Require(prefab.layer == GameLayers.ResourceIndex, $"{label} must use the Resource layer.", failures);
-            Require(collider != null && collider.isTrigger, $"{label} must use a non-blocking trigger collider.", failures);
+            Require(collider != null && !collider.isTrigger, $"{label} must use a solid collider.", failures);
             Require(prefab.transform.Find("Visual") != null, $"{label} requires a replaceable Visual child.", failures);
         }
 

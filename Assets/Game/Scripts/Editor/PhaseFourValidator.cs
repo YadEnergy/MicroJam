@@ -77,7 +77,7 @@ namespace MicroJam.Game.Editor
             HealthBar bar = prefab.GetComponentInChildren<HealthBar>(true);
             Collider2D collider = prefab.GetComponent<Collider2D>();
             Require(prefab.layer == GameLayers.ResourceIndex, $"{prefab.name} must remain on Resource layer.", failures);
-            Require(collider != null && collider.isTrigger, $"{prefab.name} must remain physically non-blocking.", failures);
+            Require(collider != null && !collider.isTrigger, $"{prefab.name} must physically block the Player.", failures);
             Require(health != null && Mathf.Approximately(health.MaxHealth, 50f) && Mathf.Approximately(health.CurrentHealth, 50f), $"{prefab.name} must serialize full 50 HP.", failures);
             Require(node != null && node.NodeType == expected.Type && node.Health == health, $"{prefab.name} ResourceNode configuration is invalid.", failures);
             Require(node != null && node.PopulationManager == null && !node.IsRegistered, $"{prefab.name} must not serialize runtime manager state.", failures);

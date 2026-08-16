@@ -271,10 +271,21 @@ namespace MicroJam.Game
         private void Awake()
         {
             EnsureCollections();
+            EnsureResourceCollisions();
             if (worldGrid == null || occupancy == null)
             {
                 Debug.LogError("ResourcePopulationManager requires scene-bound grid and occupancy references.", this);
             }
+        }
+
+        private static void EnsureResourceCollisions()
+        {
+            int resourceLayer = GameLayers.ResourceIndex;
+            int playerLayer = GameLayers.PlayerIndex;
+            int dinosaurLayer = GameLayers.DinosaurIndex;
+            if (resourceLayer < 0) return;
+            if (playerLayer >= 0) Physics2D.IgnoreLayerCollision(playerLayer, resourceLayer, false);
+            if (dinosaurLayer >= 0) Physics2D.IgnoreLayerCollision(dinosaurLayer, resourceLayer, false);
         }
 
         private void Start()
