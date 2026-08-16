@@ -20,7 +20,7 @@ MonoBehaviour:
   nightMusicVolume: 1
   dayToNight: {fileID: 8300000, guid: 39310d2a5c3ca8342ad8ba1372441ad2, type: 3}
   dayToNightVolume: 1
-  nightToDay: {fileID: 0}
+  nightToDay: {fileID: 8300000, guid: 9480a2064aa3d334188450540c8678d2, type: 3}
   nightToDayVolume: 1
   buildStructure: {fileID: 8300000, guid: d9613be6188dfbf4da564301a0e58229, type: 3}
   buildStructureVolume: 1

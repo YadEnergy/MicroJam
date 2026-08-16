@@ -3510,30 +3510,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.WaveInfoText
   dayNightCycle: {fileID: 849873141}
   textLabel: {fileID: 1457114565}
---- !u!114 &849873146
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 849873139}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f9d2b8a138a4b3eb2276990ebad91c4, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.NightLightingController
-  transitionDuration: 2
-  dayAmbientColor: {r: 1, g: 1, b: 1, a: 1}
-  nightAmbientColor: {r: 0.22, g: 0.3, b: 0.48, a: 1}
-  nightAmbientIntensity: 0.28
-  playerLightColor: {r: 0.72, g: 0.82, b: 1, a: 1}
-  playerLightIntensity: 0.45
-  playerInnerRadius: 0.5
-  playerOuterRadius: 3.5
-  campfireLightColor: {r: 1, g: 0.48, b: 0.12, a: 1}
-  campfireLightIntensity: 1.15
-  campfireInnerRadius: 1.4
-  campfireOuterRadius: 6.5
 --- !u!1 &849873143
 GameObject:
   m_ObjectHideFlags: 0
@@ -3584,6 +3560,30 @@ MonoBehaviour:
   restartButton: {fileID: 225651558}
   endedPanelTween: {fileID: 1829756945}
   sceneTransition: {fileID: 1302212162}
+--- !u!114 &849873146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 849873139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f9d2b8a138a4b3eb2276990ebad91c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.NightLightingController
+  transitionDuration: 2
+  dayAmbientColor: {r: 1, g: 1, b: 1, a: 1}
+  nightAmbientColor: {r: 0.22, g: 0.3, b: 0.48, a: 1}
+  nightAmbientIntensity: 0.28
+  playerLightColor: {r: 0.72, g: 0.82, b: 1, a: 1}
+  playerLightIntensity: 0.45
+  playerInnerRadius: 0.5
+  playerOuterRadius: 3.5
+  campfireLightColor: {r: 1, g: 0.48, b: 0.12, a: 1}
+  campfireLightIntensity: 1.15
+  campfireInnerRadius: 1.4
+  campfireOuterRadius: 6.5
 --- !u!1 &850832116
 GameObject:
   m_ObjectHideFlags: 0
