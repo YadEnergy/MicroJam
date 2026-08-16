@@ -24,8 +24,8 @@ MonoBehaviour:
   dinosaurHitPlayer: {fileID: 8300000, guid: 22316ec9bb6407243b6986c537f66d02, type: 3}
   dinosaurMiss: {fileID: 8300000, guid: 20c126fdc90661347bac113c642830e5, type: 3}
   dinosaurWalk: {fileID: 8300000, guid: 02c4b75241958c44a84e5f6830d282d9, type: 3}
+  dinosaurGetHit: {fileID: 8300000, guid: 3f6c7fba3ebd5044a940945a7c320d39, type: 3}
   humanHitBush: {fileID: 8300000, guid: 74436ebba9e43314bab7c7129c9dd94c, type: 3}
-  humanHitDinosaur: {fileID: 8300000, guid: 829f1c7a62e7ec24e9307fe22a2095ca, type: 3}
   humanHitRock: {fileID: 8300000, guid: a002265491eb83f46880f9377884c83a, type: 3}
   humanHitTree: {fileID: 0}
   humanMiss: {fileID: 8300000, guid: 787e538ac1ae08445aaa417822de7f4b, type: 3}

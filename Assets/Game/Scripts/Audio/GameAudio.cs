@@ -60,6 +60,7 @@ namespace MicroJam.Game
         {
             GameSound selected = GameSound.HumanMiss;
             int priority = 0;
+            bool hitDinosaur = false;
             if (targets != null)
             {
                 foreach (Health target in targets)
@@ -79,11 +80,13 @@ namespace MicroJam.Game
                     }
                     else if (target.GetComponentInParent<DinosaurAgent>() != null)
                     {
-                        selected = GameSound.HumanHitDinosaur;
-                        priority = 2;
+                        hitDinosaur = true;
                     }
                 }
             }
+            // Dinosaur hit audio is emitted by DinosaurAgent for every successful
+            // damage event, including tower projectiles. Avoid playing it twice here.
+            if (hitDinosaur && priority == 0) return;
             Play(selected);
         }
 

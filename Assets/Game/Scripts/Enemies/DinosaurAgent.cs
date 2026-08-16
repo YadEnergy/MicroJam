@@ -39,13 +39,21 @@ namespace MicroJam.Game
 
         private void OnEnable()
         {
-            if (health != null) health.Died += OnDied;
+            if (health != null)
+            {
+                health.DamageReceived += OnDamageReceived;
+                health.Died += OnDied;
+            }
             DinosaurRegistry.Register(this);
         }
 
         private void OnDisable()
         {
-            if (health != null) health.Died -= OnDied;
+            if (health != null)
+            {
+                health.DamageReceived -= OnDamageReceived;
+                health.Died -= OnDied;
+            }
             DinosaurRegistry.Unregister(this);
         }
 
@@ -60,6 +68,11 @@ namespace MicroJam.Game
             int dinosaurLayer = GameLayers.DinosaurIndex;
             int boundaryLayer = GameLayers.WorldBoundaryIndex;
             if (dinosaurLayer >= 0 && boundaryLayer >= 0) Physics2D.IgnoreLayerCollision(dinosaurLayer, boundaryLayer, true);
+        }
+
+        private void OnDamageReceived(DamageReceivedEvent damage)
+        {
+            if (damage.AppliedAmount > 0f) GameAudio.Play(GameSound.DinosaurGetHit);
         }
 
         private void OnDied(DeathEvent death)

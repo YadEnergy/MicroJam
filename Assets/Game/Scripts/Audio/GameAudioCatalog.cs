@@ -23,10 +23,10 @@ namespace MicroJam.Game
         [SerializeField] private AudioClip dinosaurHitPlayer;
         [SerializeField] private AudioClip dinosaurMiss;
         [SerializeField] private AudioClip dinosaurWalk;
+        [SerializeField] private AudioClip dinosaurGetHit;
 
         [Header("Human")]
         [SerializeField] private AudioClip humanHitBush;
-        [SerializeField] private AudioClip humanHitDinosaur;
         [SerializeField] private AudioClip humanHitRock;
         [SerializeField] private AudioClip humanHitTree;
         [SerializeField] private AudioClip humanMiss;
@@ -50,8 +50,8 @@ namespace MicroJam.Game
                 GameSound.DinosaurHitPlayer => dinosaurHitPlayer,
                 GameSound.DinosaurMiss => dinosaurMiss,
                 GameSound.DinosaurWalk => dinosaurWalk,
+                GameSound.DinosaurGetHit => dinosaurGetHit,
                 GameSound.HumanHitBush => humanHitBush,
-                GameSound.HumanHitDinosaur => humanHitDinosaur,
                 GameSound.HumanHitRock => humanHitRock,
                 GameSound.HumanHitTree => humanHitTree != null ? humanHitTree : humanHitRock,
                 GameSound.HumanMiss => humanMiss,
