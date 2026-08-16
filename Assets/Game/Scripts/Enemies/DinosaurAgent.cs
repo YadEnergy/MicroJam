@@ -64,6 +64,7 @@ namespace MicroJam.Game
 
         private void OnDied(DeathEvent death)
         {
+            GameAudio.Play(GameSound.DinosaurDeath);
             bool wasKilledByPlayer = death.Source != null && death.Source.GetComponentInParent<PlayerCombat>() != null;
             if (wasKilledByPlayer) PlayerPoints.Add(spawnCost * 5);
             DinosaurAnimationController animationController = GetComponent<DinosaurAnimationController>();

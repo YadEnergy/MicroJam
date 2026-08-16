@@ -3,6 +3,18 @@ using UnityEngine;
 
 namespace MicroJam.Game
 {
+    public readonly struct DinosaurAttackEvent
+    {
+        public DinosaurAttackEvent(Health target, bool hit)
+        {
+            Target = target;
+            Hit = hit;
+        }
+
+        public Health Target { get; }
+        public bool Hit { get; }
+    }
+
     [RequireComponent(typeof(Rigidbody2D))]
     public sealed class DinosaurAttack : MonoBehaviour
     {
@@ -24,6 +36,7 @@ namespace MicroJam.Game
         public float AttackDamage => attackDamage;
         public float AttackCooldown => attackCooldown;
         public event Action<Health> SuccessfulAttack;
+        public event Action<DinosaurAttackEvent> AttackPerformed;
 
         public void Configure(Rigidbody2D configuredBody, SpriteRenderer configuredVisual, Transform configuredOrigin, SpriteRenderer configuredFeedback)
         {
@@ -59,10 +72,17 @@ namespace MicroJam.Game
             if (target == null || target.IsDead || Time.time < nextAttackTime || !IsWithinRange(target)) return false;
 
             nextAttackTime = Time.time + attackCooldown;
-            if (!target.TryTakeDamage(new DamageContext(attackDamage, gameObject))) return false;
+            if (!target.TryTakeDamage(new DamageContext(attackDamage, gameObject)))
+            {
+                GameAudio.PlayDinosaurAttack(target, false);
+                AttackPerformed?.Invoke(new DinosaurAttackEvent(target, false));
+                return false;
+            }
 
             ShowFeedback(GetAttackOffset(target).normalized);
             SuccessfulAttack?.Invoke(target);
+            GameAudio.PlayDinosaurAttack(target, true);
+            AttackPerformed?.Invoke(new DinosaurAttackEvent(target, true));
             return true;
         }
 

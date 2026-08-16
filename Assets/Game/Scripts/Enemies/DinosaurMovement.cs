@@ -86,6 +86,7 @@ namespace MicroJam.Game
             float distance = Mathf.Min(moveSpeed * Time.fixedDeltaTime, offset.magnitude);
             body.MovePosition(body.position + direction * distance);
             UpdateFacing(direction);
+            GameAudio.ReportDinosaurWalking();
         }
 
         public void FaceTowards(Vector2 worldPosition)

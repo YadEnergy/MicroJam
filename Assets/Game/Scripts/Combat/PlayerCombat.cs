@@ -108,6 +108,7 @@ namespace MicroJam.Game
 
             nextAttackTime = Time.time + attackCooldown;
             successfulHitCount = ExecuteAttack();
+            GameAudio.PlayHumanAttack(hitTargets);
             AttackPerformed?.Invoke();
             ShowFeedback();
             return true;

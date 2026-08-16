@@ -148,6 +148,7 @@ namespace MicroJam.Game
         private void HandlePlayerDied(DeathEvent _)
         {
             if (gameHasEnded || IsRespawning || respawnRoutine != null) return;
+            GameAudio.Play(GameSound.HumanDeath);
             respawnRoutine = StartCoroutine(RespawnSequence());
         }
 

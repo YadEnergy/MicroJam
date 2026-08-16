@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b590d321401b4a64bc3f795d4e9d3102, type: 3}
+  m_Name: GameAudioCatalog
+  m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.GameAudioCatalog
+  soundEffectsOutput: {fileID: -5822827271515992371, guid: 454a2c69a6069fa498fdde9ec715e718, type: 2}
+  musicOutput: {fileID: -5134826909940900463, guid: 454a2c69a6069fa498fdde9ec715e718, type: 2}
+  buildStructure: {fileID: 8300000, guid: d9613be6188dfbf4da564301a0e58229, type: 3}
+  buildTower: {fileID: 0}
+  destroyStructure: {fileID: 8300000, guid: 308ad7d31ed1f1a43bd8e0be6e3a26b5, type: 3}
+  destroyTower: {fileID: 0}
+  dinosaurDeath: {fileID: 8300000, guid: b5eb61cee42d21e4c979f4fdb84eacff, type: 3}
+  dinosaurHitBuilding: {fileID: 8300000, guid: 68f7a881bb6af44468d6a2b679f8040a, type: 3}
+  dinosaurHitCampfire: {fileID: 0}
+  dinosaurHitPlayer: {fileID: 8300000, guid: 22316ec9bb6407243b6986c537f66d02, type: 3}
+  dinosaurMiss: {fileID: 8300000, guid: 20c126fdc90661347bac113c642830e5, type: 3}
+  dinosaurWalk: {fileID: 8300000, guid: 02c4b75241958c44a84e5f6830d282d9, type: 3}
+  humanHitBush: {fileID: 8300000, guid: 74436ebba9e43314bab7c7129c9dd94c, type: 3}
+  humanHitDinosaur: {fileID: 8300000, guid: 829f1c7a62e7ec24e9307fe22a2095ca, type: 3}
+  humanHitRock: {fileID: 8300000, guid: a002265491eb83f46880f9377884c83a, type: 3}
+  humanHitTree: {fileID: 0}
+  humanMiss: {fileID: 8300000, guid: 787e538ac1ae08445aaa417822de7f4b, type: 3}
+  humanDeath: {fileID: 0}
+  humanSteps: {fileID: 8300000, guid: d53e1b104fe2b8b4b9a6677ab6a2ff9f, type: 3}

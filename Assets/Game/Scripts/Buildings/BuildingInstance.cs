@@ -36,6 +36,7 @@ namespace MicroJam.Game
 
         private GridOccupancyService occupancy;
         private bool registered;
+        private bool wasPlaced;
         private bool removalStarted;
         private bool removalEventRaised;
 
@@ -58,6 +59,7 @@ namespace MicroJam.Game
             health = configuredHealth;
             footprint = configuredFootprint;
             occupiedCells = System.Array.Empty<Vector2Int>();
+            wasPlaced = false;
             removalStarted = false;
             removalEventRaised = false;
         }
@@ -90,6 +92,7 @@ namespace MicroJam.Game
             health?.ResetHealth();
             GetComponentInChildren<HealthBar>(true)?.ResetForSpawn();
             registered = occupancy.TryRegister(this, occupiedCells);
+            wasPlaced = registered;
             return registered;
         }
 
@@ -192,6 +195,12 @@ namespace MicroJam.Game
 
             removalEventRaised = true;
             Removing?.Invoke(new BuildingRemovalEvent(this, reason, woodRefund, stoneRefund));
+            if (wasPlaced)
+            {
+                bool isTower = definition != null &&
+                    (definition.BuildingType == BuildingType.BowTower || definition.BuildingType == BuildingType.StoneTower);
+                GameAudio.Play(isTower ? GameSound.DestroyTower : GameSound.DestroyStructure);
+            }
         }
 
         private void OnValidate()
