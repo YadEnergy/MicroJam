@@ -108,7 +108,8 @@ namespace MicroJam.Game
         private void ShowFeedback(Vector2 direction)
         {
             if (attackFeedback == null || direction.sqrMagnitude <= Mathf.Epsilon) return;
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            Vector2 localDirection = transform.InverseTransformDirection(direction);
+            float angle = Mathf.Atan2(localDirection.y, localDirection.x) * Mathf.Rad2Deg;
             if (attackOrigin != null)
             {
                 attackOrigin.localRotation = Quaternion.Euler(0f, 0f, angle);

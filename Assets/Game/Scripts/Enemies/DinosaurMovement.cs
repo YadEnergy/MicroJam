@@ -8,6 +8,7 @@ namespace MicroJam.Game
     {
         [SerializeField] private Rigidbody2D body;
         [SerializeField] private SpriteRenderer visual;
+        [SerializeField] private Transform healthBarRoot;
         [SerializeField, Min(0.01f)] private float moveSpeed = 2.5f;
         [SerializeField, Min(0.01f)] private float waypointTolerance = 0.08f;
         [SerializeField, Min(1f)] private float pushResistanceMass = 100f;
@@ -19,7 +20,7 @@ namespace MicroJam.Game
         private int waypointIndex;
         private float avoidanceSide;
         private float keepAvoidanceSideUntil;
-        private Vector2 facingDirection = Vector2.right;
+        private float facingAngle;
 
         public Vector2 Position => body != null ? body.position : transform.position;
         public IReadOnlyList<Vector2> CurrentPath => path;
@@ -37,6 +38,7 @@ namespace MicroJam.Game
         {
             body ??= GetComponent<Rigidbody2D>();
             visual ??= transform.Find("Visual")?.GetComponent<SpriteRenderer>();
+            healthBarRoot ??= transform.Find("HealthBarAnchor");
             if (visual != null)
             {
                 visual.flipX = false;
@@ -93,22 +95,28 @@ namespace MicroJam.Game
 
         private void UpdateFacing(Vector2 direction)
         {
-            if (direction.sqrMagnitude > 0.0001f) facingDirection = direction.normalized;
+            if (direction.sqrMagnitude <= 0.0001f) return;
+            facingAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            if (body != null)
+            {
+                body.angularVelocity = 0f;
+                body.SetRotation(facingAngle);
+            }
         }
 
         private void LateUpdate()
         {
             if (visual == null) return;
 
-            // Every sheet is authored looking right, so rotate that local +X direction toward
-            // the actual 2D movement/attack direction. Only Visual rotates; UI and colliders do not.
+            // The Rigidbody rotation turns both the sprite and its capsule collider. Keep the
+            // Visual local to the body and counter-rotate only the world-space health bar.
             Transform visualTransform = visual.transform;
             Vector3 scale = visualTransform.localScale;
             scale.x = Mathf.Abs(scale.x);
             visualTransform.localScale = scale;
-            float angle = Mathf.Atan2(facingDirection.y, facingDirection.x) * Mathf.Rad2Deg;
-            visualTransform.localRotation = Quaternion.Euler(0f, 0f, angle);
+            visualTransform.localRotation = Quaternion.identity;
             visual.flipX = false;
+            if (healthBarRoot != null) healthBarRoot.rotation = Quaternion.identity;
         }
 
         private Vector2 AvoidPlayer(Vector2 forward)
