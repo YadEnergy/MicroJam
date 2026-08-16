@@ -35,7 +35,9 @@ namespace MicroJam.Game
                 return;
             }
 
-            body.linearVelocity = health != null && health.IsDead ? Vector2.zero : DesiredVelocity;
+            bool canMove = health == null || !health.IsDead;
+            body.linearVelocity = canMove ? DesiredVelocity : Vector2.zero;
+            GameAudio.ReportHumanWalking(canMove && DesiredVelocity.sqrMagnitude > 0.01f);
         }
 
         private void OnDisable()

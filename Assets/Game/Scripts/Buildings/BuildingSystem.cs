@@ -291,10 +291,14 @@ namespace MicroJam.Game
 
             instanceObject.name = $"{definition.DisplayName} [{anchorCell.x}, {anchorCell.y}]";
             BuildingPlaced?.Invoke(placed);
+            GameAudio.Play(IsTower(definition.BuildingType) ? GameSound.BuildTower : GameSound.BuildStructure);
             PlacementStatus = BuildPlacementStatus.Occupied;
             ShowPreview(definition, anchorCell, false);
             return true;
         }
+
+        private static bool IsTower(BuildingType type) =>
+            type == BuildingType.BowTower || type == BuildingType.StoneTower;
 
         public static Vector2Int[] GetFootprintCells(Vector2Int anchorCell, Vector2Int footprintSize)
         {

@@ -64,9 +64,11 @@ namespace MicroJam.Game
 
         private void OnDied(DeathEvent death)
         {
+            GameAudio.Play(GameSound.DinosaurDeath);
             bool wasKilledByPlayer = death.Source != null && death.Source.GetComponentInParent<PlayerCombat>() != null;
             if (wasKilledByPlayer) PlayerPoints.Add(spawnCost * 5);
-            Destroy(gameObject);
+            DinosaurAnimationController animationController = GetComponent<DinosaurAnimationController>();
+            if (animationController == null || !animationController.PlayDeathAndDestroy()) Destroy(gameObject);
         }
 
         private void OnValidate() => spawnCost = Mathf.Max(1, spawnCost);

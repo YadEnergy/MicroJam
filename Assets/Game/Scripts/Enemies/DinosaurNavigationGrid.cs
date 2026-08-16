@@ -14,6 +14,9 @@ namespace MicroJam.Game
             Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left
         };
 
+        private readonly HashSet<Vector2Int> cachedBlockedTurns = new();
+        private int blockedTurnCacheRevision = -1;
+
         public WorldGridService WorldGrid => worldGrid;
         public GridOccupancyService Occupancy => occupancy;
         public int Revision { get; private set; }
@@ -85,21 +88,109 @@ namespace MicroJam.Game
             }
 
             Vector2Int start = ClampToPlayable(worldGrid.WorldToCell(startWorld));
-            if (!TryFindCellPath(start, goals, allowBuildingTraversal, out List<Vector2Int> cells))
+            if (blockedTurnCacheRevision != Revision)
+            {
+                cachedBlockedTurns.Clear();
+                blockedTurnCacheRevision = Revision;
+            }
+
+            HashSet<Vector2Int> excludedTurns = new(cachedBlockedTurns);
+            float turnClearance = GetTurnClearance(attacker);
+            List<Vector2Int> cells = null;
+            int attempts = 0;
+            while (attempts++ < 6 && TryFindCellPath(start, goals, allowBuildingTraversal, excludedTurns, out cells))
+            {
+                if (allowBuildingTraversal || turnClearance <= 0f ||
+                    !TryFindBlockedTurn(cells, turnClearance, out Vector2Int blockedTurn))
+                {
+                    break;
+                }
+
+                excludedTurns.Add(blockedTurn);
+                cachedBlockedTurns.Add(blockedTurn);
+                cells = null;
+            }
+
+            if (cells == null)
             {
                 return false;
             }
 
-            for (int i = 0; i < cells.Count; i++)
+            for (int i = 1; i < cells.Count; i++)
             {
-                worldPath.Add(worldGrid.CellToWorldCenter(cells[i]));
-                if (i > 0 && firstBlockingBuilding == null)
+                if (firstBlockingBuilding == null)
                 {
                     firstBlockingBuilding = GetBlockingBuilding(cells[i]);
                 }
             }
 
+            worldPath = BuildSmoothedWorldPath(startWorld, cells, allowBuildingTraversal, GetTravelClearance(attacker));
+
             return true;
+        }
+
+        private List<Vector2> BuildSmoothedWorldPath(
+            Vector2 startWorld,
+            List<Vector2Int> cells,
+            bool allowBuildingTraversal,
+            float travelClearance)
+        {
+            List<Vector2> result = new();
+            if (cells == null || cells.Count == 0) return result;
+
+            // Routes through buildings are only queried to select the first obstacle. Keeping
+            // their complete cell path makes that diagnostic route unambiguous.
+            if (allowBuildingTraversal)
+            {
+                for (int i = 0; i < cells.Count; i++) result.Add(worldGrid.CellToWorldCenter(cells[i]));
+                return result;
+            }
+
+            Vector2 anchor = startWorld;
+            int next = cells.Count > 1 ? 1 : 0;
+            while (next < cells.Count)
+            {
+                int furthest = next;
+                for (int candidate = next + 1; candidate < cells.Count; candidate++)
+                {
+                    Vector2 candidateWorld = worldGrid.CellToWorldCenter(cells[candidate]);
+                    if (!IsClearSegment(anchor, candidateWorld, travelClearance)) break;
+                    furthest = candidate;
+                }
+
+                Vector2 waypoint = worldGrid.CellToWorldCenter(cells[furthest]);
+                result.Add(waypoint);
+                anchor = waypoint;
+                next = furthest + 1;
+            }
+
+            return result;
+        }
+
+        private bool IsClearSegment(Vector2 from, Vector2 to, float clearance)
+        {
+            float sampleSpacing = Mathf.Max(0.05f, worldGrid.Config.TileSize * 0.2f);
+            int samples = Mathf.Max(1, Mathf.CeilToInt(Vector2.Distance(from, to) / sampleSpacing));
+            Vector2 direction = (to - from).normalized;
+            Vector2 perpendicular = new(-direction.y, direction.x);
+            for (int i = 1; i <= samples; i++)
+            {
+                Vector2 point = Vector2.Lerp(from, to, i / (float)samples);
+                if (!IsClearPoint(point) ||
+                    (clearance > 0f && (!IsClearPoint(point + perpendicular * clearance) ||
+                                        !IsClearPoint(point - perpendicular * clearance))))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private bool IsClearPoint(Vector2 point)
+        {
+            Vector2Int cell = worldGrid.WorldToCell(point);
+            return worldGrid.Config.IsCellInsidePlayableArea(cell) && GetBlockingBuilding(cell) == null;
         }
 
         public bool HasFreePath(Vector2 startWorld, Health target, float attackRange)
@@ -171,6 +262,7 @@ namespace MicroJam.Game
             Vector2Int start,
             List<Vector2Int> goals,
             bool allowBuildingTraversal,
+            HashSet<Vector2Int> excludedCells,
             out List<Vector2Int> path)
         {
             path = null;
@@ -205,7 +297,8 @@ namespace MicroJam.Game
                 foreach (Vector2Int direction in Directions)
                 {
                     Vector2Int next = current + direction;
-                    if (!worldGrid.Config.IsCellInsidePlayableArea(next) || closed.Contains(next))
+                    if (!worldGrid.Config.IsCellInsidePlayableArea(next) || closed.Contains(next) ||
+                        (excludedCells != null && excludedCells.Contains(next)))
                     {
                         continue;
                     }
@@ -230,6 +323,75 @@ namespace MicroJam.Game
             }
 
             return false;
+        }
+
+        private float GetTurnClearance(DinosaurAttack attacker)
+        {
+            if (attacker == null) return 0f;
+            CapsuleCollider2D capsule = attacker.GetComponent<CapsuleCollider2D>();
+            if (capsule == null) return 0f;
+
+            Vector3 scale = capsule.transform.lossyScale;
+            float width = capsule.size.x * Mathf.Abs(scale.x);
+            float height = capsule.size.y * Mathf.Abs(scale.y);
+            return Mathf.Max(width, height) * 0.5f + 0.05f;
+        }
+
+        private float GetTravelClearance(DinosaurAttack attacker)
+        {
+            if (attacker == null) return 0f;
+            CapsuleCollider2D capsule = attacker.GetComponent<CapsuleCollider2D>();
+            if (capsule == null) return 0f;
+
+            Vector3 scale = capsule.transform.lossyScale;
+            float width = capsule.size.x * Mathf.Abs(scale.x);
+            float height = capsule.size.y * Mathf.Abs(scale.y);
+            return Mathf.Min(width, height) * 0.5f + 0.03f;
+        }
+
+        private bool TryFindBlockedTurn(List<Vector2Int> cells, float clearance, out Vector2Int blockedTurn)
+        {
+            blockedTurn = default;
+            if (cells == null || cells.Count < 3) return false;
+
+            for (int i = 1; i < cells.Count - 1; i++)
+            {
+                Vector2Int incoming = cells[i] - cells[i - 1];
+                Vector2Int outgoing = cells[i + 1] - cells[i];
+                if (incoming == outgoing) continue;
+                if (HasTurnClearance(cells[i], clearance)) continue;
+
+                blockedTurn = cells[i];
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool HasTurnClearance(Vector2Int turnCell, float clearance)
+        {
+            Vector2 turnCenter = worldGrid.CellToWorldCenter(turnCell);
+            float tileSize = worldGrid.Config.TileSize;
+            int cellRadius = Mathf.CeilToInt(clearance / tileSize) + 1;
+            for (int y = -cellRadius; y <= cellRadius; y++)
+            {
+                for (int x = -cellRadius; x <= cellRadius; x++)
+                {
+                    Vector2Int candidate = turnCell + new Vector2Int(x, y);
+                    if (GetBlockingBuilding(candidate) == null) continue;
+
+                    Vector2 buildingCenter = worldGrid.CellToWorldCenter(candidate);
+                    Vector2 delta = turnCenter - buildingCenter;
+                    float nearestX = Mathf.Max(Mathf.Abs(delta.x) - tileSize * 0.5f, 0f);
+                    float nearestY = Mathf.Max(Mathf.Abs(delta.y) - tileSize * 0.5f, 0f);
+                    if (nearestX * nearestX + nearestY * nearestY < clearance * clearance)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
 
         private static void Enqueue(List<PathNode> heap, PathNode node)
@@ -356,6 +518,8 @@ namespace MicroJam.Game
             if (change.Occupant is BuildingInstance)
             {
                 Revision++;
+                cachedBlockedTurns.Clear();
+                blockedTurnCacheRevision = Revision;
             }
         }
 
