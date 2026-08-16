@@ -90,12 +90,66 @@ namespace MicroJam.Game
                 return false;
             }
 
-            for (int i = 0; i < cells.Count; i++)
+            for (int i = 1; i < cells.Count; i++)
             {
-                worldPath.Add(worldGrid.CellToWorldCenter(cells[i]));
-                if (i > 0 && firstBlockingBuilding == null)
+                if (firstBlockingBuilding == null)
                 {
                     firstBlockingBuilding = GetBlockingBuilding(cells[i]);
+                }
+            }
+
+            worldPath = BuildSmoothedWorldPath(startWorld, cells, allowBuildingTraversal);
+
+            return true;
+        }
+
+        private List<Vector2> BuildSmoothedWorldPath(
+            Vector2 startWorld,
+            List<Vector2Int> cells,
+            bool allowBuildingTraversal)
+        {
+            List<Vector2> result = new();
+            if (cells == null || cells.Count == 0) return result;
+
+            // Routes through buildings are only queried to select the first obstacle. Keeping
+            // their complete cell path makes that diagnostic route unambiguous.
+            if (allowBuildingTraversal)
+            {
+                for (int i = 0; i < cells.Count; i++) result.Add(worldGrid.CellToWorldCenter(cells[i]));
+                return result;
+            }
+
+            Vector2 anchor = startWorld;
+            int next = cells.Count > 1 ? 1 : 0;
+            while (next < cells.Count)
+            {
+                int furthest = next;
+                for (int candidate = next + 1; candidate < cells.Count; candidate++)
+                {
+                    Vector2 candidateWorld = worldGrid.CellToWorldCenter(cells[candidate]);
+                    if (!IsClearSegment(anchor, candidateWorld)) break;
+                    furthest = candidate;
+                }
+
+                Vector2 waypoint = worldGrid.CellToWorldCenter(cells[furthest]);
+                result.Add(waypoint);
+                anchor = waypoint;
+                next = furthest + 1;
+            }
+
+            return result;
+        }
+
+        private bool IsClearSegment(Vector2 from, Vector2 to)
+        {
+            float sampleSpacing = Mathf.Max(0.05f, worldGrid.Config.TileSize * 0.2f);
+            int samples = Mathf.Max(1, Mathf.CeilToInt(Vector2.Distance(from, to) / sampleSpacing));
+            for (int i = 1; i <= samples; i++)
+            {
+                Vector2Int cell = worldGrid.WorldToCell(Vector2.Lerp(from, to, i / (float)samples));
+                if (!worldGrid.Config.IsCellInsidePlayableArea(cell) || GetBlockingBuilding(cell) != null)
+                {
+                    return false;
                 }
             }
 

@@ -114,7 +114,7 @@ namespace MicroJam.Game.Editor
             Require(GameLayers.WorldBoundaryIndex >= 0, "WorldBoundary layer is missing.", failures);
             Require(GameLayers.DoorIndex >= 0, "Door layer is missing.", failures);
 
-            Require(!Ignored(GameLayers.PlayerIndex, GameLayers.DinosaurIndex), "Player must collide with Dinosaur.", failures);
+            Require(Ignored(GameLayers.PlayerIndex, GameLayers.DinosaurIndex), "Player and Dinosaur must not physically push each other.", failures);
             Require(Ignored(GameLayers.DinosaurIndex, GameLayers.DinosaurIndex), "Dinosaurs must not physically collide with each other.", failures);
             Require(!Ignored(GameLayers.PlayerIndex, GameLayers.BuildingIndex), "Player must collide with Wall/Campfire.", failures);
             Require(!Ignored(GameLayers.DinosaurIndex, GameLayers.BuildingIndex), "Dinosaur must collide with Wall/Campfire.", failures);

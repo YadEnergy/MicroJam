@@ -336,7 +336,7 @@ namespace MicroJam.Game.Editor
             SetIgnored(GameLayers.PlayerIndex, GameLayers.DoorIndex, true);
             SetIgnored(GameLayers.PlayerIndex, GameLayers.ResourceIndex, true);
             SetIgnored(GameLayers.DinosaurIndex, GameLayers.ResourceIndex, true);
-            SetIgnored(GameLayers.PlayerIndex, GameLayers.DinosaurIndex, false);
+            SetIgnored(GameLayers.PlayerIndex, GameLayers.DinosaurIndex, true);
             SetIgnored(GameLayers.PlayerIndex, GameLayers.BuildingIndex, false);
             SetIgnored(GameLayers.DinosaurIndex, GameLayers.BuildingIndex, false);
             SetIgnored(GameLayers.DinosaurIndex, GameLayers.DoorIndex, false);
