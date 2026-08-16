@@ -14,6 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.GameAudioCatalog
   soundEffectsOutput: {fileID: -5822827271515992371, guid: 454a2c69a6069fa498fdde9ec715e718, type: 2}
   musicOutput: {fileID: -5134826909940900463, guid: 454a2c69a6069fa498fdde9ec715e718, type: 2}
+  dayMusic: {fileID: 0}
+  dayMusicVolume: 1
+  nightMusic: {fileID: 8300000, guid: 2fdf2531da4846d40b20c5d7e1395242, type: 3}
+  nightMusicVolume: 1
   buildStructure: {fileID: 8300000, guid: d9613be6188dfbf4da564301a0e58229, type: 3}
   buildStructureVolume: 1
   buildTower: {fileID: 8300000, guid: af57ead2fd712234d83bb29d464b91cf, type: 3}

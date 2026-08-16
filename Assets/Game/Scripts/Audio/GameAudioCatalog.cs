@@ -10,6 +10,12 @@ namespace MicroJam.Game
         [SerializeField] private AudioMixerGroup soundEffectsOutput;
         [SerializeField] private AudioMixerGroup musicOutput;
 
+        [Header("Music")]
+        [SerializeField] private AudioClip dayMusic;
+        [SerializeField, Range(0f, 1f)] private float dayMusicVolume = 1f;
+        [SerializeField] private AudioClip nightMusic;
+        [SerializeField, Range(0f, 1f)] private float nightMusicVolume = 1f;
+
         [Header("Buildings")]
         [SerializeField] private AudioClip buildStructure;
         [SerializeField, Range(0f, 1f)] private float buildStructureVolume = 1f;
@@ -56,6 +62,9 @@ namespace MicroJam.Game
 
         public AudioMixerGroup SoundEffectsOutput => soundEffectsOutput;
         public AudioMixerGroup MusicOutput => musicOutput;
+
+        public AudioClip GetMusicClip(bool night) => night ? nightMusic : dayMusic;
+        public float GetMusicVolume(bool night) => night ? nightMusicVolume : dayMusicVolume;
 
         public AudioClip GetClip(GameSound sound)
         {

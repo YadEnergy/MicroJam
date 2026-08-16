@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace MicroJam.Game
 {
@@ -15,6 +16,8 @@ namespace MicroJam.Game
         private float musicVolume = 1f;
         private float nextHumanStepTime;
         private float nextDinosaurStepTime;
+        private DayNightCycle observedDayNightCycle;
+        private bool currentMusicIsNight;
 
         public static float SfxVolume => Instance != null ? Instance.sfxVolume : 1f;
         public static float MusicVolume => Instance != null ? Instance.musicVolume : 1f;
@@ -43,6 +46,54 @@ namespace MicroJam.Game
             sfxVolume = PlayerPrefs.GetFloat(SfxVolumeKey, 1f);
             musicVolume = PlayerPrefs.GetFloat(MusicVolumeKey, 1f);
             if (musicSource != null) musicSource.volume = musicVolume;
+            SceneManager.sceneLoaded += HandleSceneLoaded;
+            HandleSceneLoaded(SceneManager.GetActiveScene(), LoadSceneMode.Single);
+        }
+
+        private void OnDestroy()
+        {
+            if (instance != this) return;
+            SceneManager.sceneLoaded -= HandleSceneLoaded;
+            ObserveDayNightCycle(null);
+            instance = null;
+        }
+
+        private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            DayNightCycle cycle = FindFirstObjectByType<DayNightCycle>();
+            ObserveDayNightCycle(cycle);
+            PlayCatalogMusic(cycle != null && !cycle.IsDay);
+        }
+
+        private void ObserveDayNightCycle(DayNightCycle cycle)
+        {
+            if (observedDayNightCycle != null) observedDayNightCycle.DayStateChanged -= HandleDayStateChanged;
+            observedDayNightCycle = cycle;
+            if (observedDayNightCycle != null) observedDayNightCycle.DayStateChanged += HandleDayStateChanged;
+        }
+
+        private void HandleDayStateChanged(bool isDay) => PlayCatalogMusic(!isDay);
+
+        private void PlayCatalogMusic(bool night)
+        {
+            if (catalog == null || musicSource == null) return;
+            currentMusicIsNight = night;
+            AudioClip clip = catalog.GetMusicClip(night);
+            musicSource.outputAudioMixerGroup = catalog.MusicOutput;
+            musicSource.volume = musicVolume * catalog.GetMusicVolume(night);
+            musicSource.loop = true;
+
+            if (clip == null)
+            {
+                musicSource.Stop();
+                musicSource.clip = null;
+                return;
+            }
+
+            if (musicSource.clip == clip && musicSource.isPlaying) return;
+            musicSource.Stop();
+            musicSource.clip = clip;
+            musicSource.Play();
         }
 
         public static void Play(GameSound sound)
@@ -174,7 +225,11 @@ namespace MicroJam.Game
             if (audio == null) return;
             audio.musicVolume = Mathf.Clamp01(value);
             PlayerPrefs.SetFloat(MusicVolumeKey, audio.musicVolume);
-            if (audio.musicSource != null) audio.musicSource.volume = audio.musicVolume;
+            if (audio.musicSource != null)
+            {
+                float trackVolume = audio.catalog != null ? audio.catalog.GetMusicVolume(audio.currentMusicIsNight) : 1f;
+                audio.musicSource.volume = audio.musicVolume * trackVolume;
+            }
         }
 
         private AudioSource GetAvailableSource()
