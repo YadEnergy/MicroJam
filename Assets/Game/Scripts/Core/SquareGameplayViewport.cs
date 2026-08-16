@@ -76,13 +76,9 @@ namespace MicroJam.Game
 
             gameplayCamera.rect = CalculateSquareViewport(Screen.width, Screen.height);
 
-            if (worldConfig != null)
-            {
-                gameplayCamera.orthographic = true;
-                gameplayCamera.orthographicSize = worldConfig.WorldSize.y * 0.5f;
-                Vector3 position = gameplayCamera.transform.position;
-                gameplayCamera.transform.position = new Vector3(0f, 0f, position.z);
-            }
+            // Cinemachine owns the camera position and lens. This component only maintains
+            // the square viewport/letterbox and screen-to-world conversion.
+            gameplayCamera.orthographic = true;
         }
 
         private void OnGUI()
