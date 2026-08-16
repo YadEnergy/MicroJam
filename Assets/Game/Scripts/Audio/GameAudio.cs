@@ -55,6 +55,35 @@ namespace MicroJam.Game
             source.PlayOneShot(clip, audio.sfxVolume * audio.catalog.GetVolume(sound));
         }
 
+        public static bool ConfigureLoopingSource(AudioSource source, GameSound sound)
+        {
+            GameAudio audio = Instance;
+            if (audio == null || audio.catalog == null || source == null) return false;
+            AudioClip clip = audio.catalog.GetClip(sound);
+            if (clip == null) return false;
+
+            if (source.clip != clip)
+            {
+                source.Stop();
+                source.clip = clip;
+            }
+
+            source.loop = true;
+            source.playOnAwake = false;
+            source.spatialBlend = 0f;
+            source.outputAudioMixerGroup = audio.catalog.SoundEffectsOutput;
+            if (!source.isPlaying) source.Play();
+            return true;
+        }
+
+        public static float GetSoundVolume(GameSound sound, float localVolume = 1f)
+        {
+            GameAudio audio = Instance;
+            return audio != null && audio.catalog != null
+                ? audio.sfxVolume * audio.catalog.GetVolume(sound) * Mathf.Clamp01(localVolume)
+                : 0f;
+        }
+
         public static void PlayHumanAttack(IEnumerable<Health> targets)
         {
             GameSound selected = GameSound.HumanMiss;
