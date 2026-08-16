@@ -142,7 +142,6 @@ namespace MicroJam.Game
                 Vector2Int footprintCell = footprint[i];
                 if (!config.IsCellInsidePlayableArea(footprintCell) ||
                     config.ProtectedCampfireCellRect.Contains(footprintCell) ||
-                    (replacement && config.IsCellInsideBuildZone(footprintCell)) ||
                     occupancy.IsCellOccupied(footprintCell))
                 {
                     return false;
@@ -320,7 +319,7 @@ namespace MicroJam.Game
             {
                 if (!TrySpawnRandom(type, true))
                 {
-                    Debug.LogWarning($"Could not restore {type} population to minimum {minimum}; no valid outside-build-zone cell was available.", this);
+                    Debug.LogWarning($"Could not restore {type} population to minimum {minimum}; no valid playable cell was available.", this);
                     break;
                 }
             }

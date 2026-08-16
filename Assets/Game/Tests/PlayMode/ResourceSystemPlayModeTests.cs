@@ -134,12 +134,26 @@ namespace MicroJam.Game.Tests
         }
 
         [UnityTest]
-        public IEnumerator MinimumPopulationRestoresOnlyBelowFiveAndOnlyOutsideBuildZone()
+        public IEnumerator MinimumPopulationRestoresOnlyBelowFiveAndCanUseTheFullPlayableMap()
         {
             yield return SceneManager.LoadSceneAsync("Game", LoadSceneMode.Single);
             yield return null;
 
             ResourcePopulationManager manager = UnityEngine.Object.FindFirstObjectByType<ResourcePopulationManager>();
+            Vector2Int? clearBuildZoneCell = null;
+            foreach (Vector2Int cell in manager.WorldGrid.Config.BuildZoneCellRect.allPositionsWithin)
+            {
+                if (manager.IsValidSpawnCell(cell, false))
+                {
+                    clearBuildZoneCell = cell;
+                    break;
+                }
+            }
+
+            Assert.That(clearBuildZoneCell.HasValue, Is.True, "Expected at least one clear Build Zone cell for the replacement-spawn check.");
+            Assert.That(manager.IsValidSpawnCell(clearBuildZoneCell.Value, true), Is.True,
+                "Replacement resources should be allowed throughout the playable map, including the Build Zone.");
+
             GameObject nonPlayer = new("Population Test Damage Source");
             foreach (ResourceNodeType type in Enum.GetValues(typeof(ResourceNodeType)))
             {
@@ -158,7 +172,7 @@ namespace MicroJam.Game.Tests
                 Assert.That(manager.GetActiveCount(type), Is.EqualTo(5), $"{type} should immediately restore from 4 to minimum 5.");
                 ResourceNode replacement = manager.GetActiveNodesSnapshot(type).Single(node => node.IsReplacementSpawn);
                 Assert.That(manager.WorldGrid.Config.IsCellInsidePlayableArea(replacement.OccupiedCell), Is.True);
-                Assert.That(manager.WorldGrid.IsCellInsideBuildZone(replacement.OccupiedCell), Is.False, $"Replacement {type} spawned inside Build Zone.");
+                Assert.That(manager.WorldGrid.Config.ProtectedCampfireCellRect.Contains(replacement.OccupiedCell), Is.False);
                 Assert.That(manager.Occupancy.TryGetOccupant(replacement.OccupiedCell, out UnityEngine.Object occupant), Is.True);
                 Assert.That(occupant, Is.SameAs(replacement));
                 Assert.That(replacement.transform.position, Is.EqualTo((Vector3)manager.WorldGrid.CellToWorldCenter(replacement.OccupiedCell)));

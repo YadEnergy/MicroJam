@@ -3945,7 +3945,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.DayNightCycle
   dinosaurSpawner: {fileID: 985649089}
-  dayDuration: 10
+  dayDuration: 60
   waitForTutorialBeforeFirstNight: 1
 --- !u!114 &849873142
 MonoBehaviour:

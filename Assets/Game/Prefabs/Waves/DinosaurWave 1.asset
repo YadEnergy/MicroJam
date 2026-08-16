@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3333333333333333333333333333333, type: 3}
   m_Name: DinosaurWave 1
   m_EditorClassIdentifier: MicroJam.Game:MicroJam.Game:DinosaurWave
-  coinBank: 10
-  spawnInterval: 0.75
+  coinBank: 25
+  spawnInterval: 0.5
   allowedDinosaurs:
   - {fileID: 3988364512398765412, guid: 278a353183a96f94fa0f719647406e13, type: 3}

@@ -255,8 +255,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1d3815bc1e50e84090e5dd0b62edc84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.Health
-  maxHealth: 100
-  currentHealth: 100
+  maxHealth: 150
+  currentHealth: 1
   initializeAtMaxOnAwake: 1
 --- !u!114 &8216755973236381196
 MonoBehaviour:
@@ -306,8 +306,8 @@ MonoBehaviour:
   projectileSpawnPoint: {fileID: 808629752706805935}
   projectilePrefab: {fileID: 8562879782622324687, guid: ce0e617449f45ff4ebc4cbb98754bc3c, type: 3}
   attackRange: 30
-  attackDamage: 5
-  attackCooldown: 0.5
+  attackDamage: 15
+  attackCooldown: 1.5
   projectileSpeed: 20
   showRangeGizmo: 0
   showTargetGizmo: 0
@@ -524,8 +524,8 @@ Transform:
   m_GameObject: {fileID: 8156885660404926096}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.01}
-  m_LocalScale: {x: 1.8, y: 0.14, z: 1}
+  m_LocalPosition: {x: -0.894, y: 0, z: -0.01}
+  m_LocalScale: {x: 0.012, y: 0.14, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6386283254941608442}
