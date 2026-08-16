@@ -8,11 +8,13 @@ namespace MicroJam.Game
     public sealed class ResourcePopulationDefinition
     {
         [SerializeField] private ResourceNode prefab;
+        [SerializeField] private Sprite[] visualVariants = Array.Empty<Sprite>();
         [SerializeField, Min(0)] private int initialCount = 10;
         [SerializeField, Min(0)] private int minimumCount = 5;
         [SerializeField] private Transform runtimeParent;
 
         public ResourceNode Prefab => prefab;
+        public IReadOnlyList<Sprite> VisualVariants => visualVariants;
         public int InitialCount => initialCount;
         public int MinimumCount => minimumCount;
         public Transform RuntimeParent => runtimeParent;
@@ -151,6 +153,7 @@ namespace MicroJam.Game
             Vector2 position = worldGrid.Config.CellToWorldCenter(cell);
             spawned = Instantiate(definition.Prefab, position, Quaternion.identity, definition.RuntimeParent);
             spawned.name = $"{type} [{cell.x}, {cell.y}]";
+            ApplyRandomVisual(spawned, definition);
             if (!spawned.InitializeSpawn(this, cell, replacement))
             {
                 Destroy(spawned.gameObject);
@@ -160,6 +163,37 @@ namespace MicroJam.Game
 
             NodeSpawned?.Invoke(spawned);
             return true;
+        }
+
+        private static void ApplyRandomVisual(ResourceNode node, ResourcePopulationDefinition definition)
+        {
+            if (node == null || definition?.VisualVariants == null) return;
+
+            int validVariantCount = 0;
+            for (int i = 0; i < definition.VisualVariants.Count; i++)
+            {
+                if (definition.VisualVariants[i] != null) validVariantCount++;
+            }
+
+            // An empty list intentionally keeps the sprite authored on the prefab.
+            if (validVariantCount == 0) return;
+
+            int selectedIndex = UnityEngine.Random.Range(0, validVariantCount);
+            Sprite selectedSprite = null;
+            for (int i = 0; i < definition.VisualVariants.Count; i++)
+            {
+                Sprite candidate = definition.VisualVariants[i];
+                if (candidate == null) continue;
+                if (selectedIndex-- == 0)
+                {
+                    selectedSprite = candidate;
+                    break;
+                }
+            }
+
+            Transform visual = node.transform.Find("Visual");
+            SpriteRenderer renderer = visual != null ? visual.GetComponent<SpriteRenderer>() : null;
+            if (renderer != null) renderer.sprite = selectedSprite;
         }
 
         public bool RegisterSpawnedNode(ResourceNode node)

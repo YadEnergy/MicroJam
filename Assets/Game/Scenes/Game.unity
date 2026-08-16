@@ -3018,16 +3018,26 @@ MonoBehaviour:
   occupancy: {fileID: 317239586}
   tree:
     prefab: {fileID: 5105284517828571016, guid: e97e56254c4677049a0ffa3f77c7ad59, type: 3}
+    visualVariants:
+    - {fileID: -1494605031, guid: b77e2065929740e4d8c72f48fdd32d94, type: 3}
+    - {fileID: -636879370, guid: b77e2065929740e4d8c72f48fdd32d94, type: 3}
     initialCount: 10
     minimumCount: 5
     runtimeParent: {fileID: 105643983}
   rock:
     prefab: {fileID: 3124992359798026005, guid: 5957a09bba1127240818374895afdc10, type: 3}
+    visualVariants:
+    - {fileID: -1607261942, guid: b77e2065929740e4d8c72f48fdd32d94, type: 3}
+    - {fileID: 1764697823, guid: b77e2065929740e4d8c72f48fdd32d94, type: 3}
+    - {fileID: 1610932322, guid: b77e2065929740e4d8c72f48fdd32d94, type: 3}
     initialCount: 10
     minimumCount: 5
     runtimeParent: {fileID: 1220497067}
   bush:
     prefab: {fileID: 3839749693550087077, guid: 7401e58e39f37974fbe5ec8d7a474996, type: 3}
+    visualVariants:
+    - {fileID: 6158802113039044628, guid: b77e2065929740e4d8c72f48fdd32d94, type: 3}
+    - {fileID: 285133768, guid: b77e2065929740e4d8c72f48fdd32d94, type: 3}
     initialCount: 10
     minimumCount: 5
     runtimeParent: {fileID: 89478107}
