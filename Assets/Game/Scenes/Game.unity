@@ -1385,6 +1385,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 252323220}
+  - component: {fileID: 252323221}
   m_Layer: 5
   m_Name: AudioSettings
   m_TagString: Untagged
@@ -1413,6 +1414,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -214}
   m_SizeDelta: {x: 320, y: 130}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &252323221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 252323219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05576a294e124b3284e87022bf593e42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.AudioVolumeControls
+  musicSlider: {fileID: 1746137426}
+  soundEffectsSlider: {fileID: 636436497}
 --- !u!114 &257464525
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2498,7 +2513,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u041C\u0423\u0417\u042B\u041A\u0410"
+  m_text: MUSIC
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 0}
   m_sharedMaterial: {fileID: 0}
@@ -3357,7 +3372,6 @@ GameObject:
   - component: {fileID: 719057322}
   - component: {fileID: 719057324}
   - component: {fileID: 719057323}
-  - component: {fileID: 719057325}
   m_Layer: 5
   m_Name: PauseContent
   m_TagString: Untagged
@@ -3427,20 +3441,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 719057321}
   m_CullTransparentMesh: 1
---- !u!114 &719057325
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 719057321}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05576a294e124b3284e87022bf593e42, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.AudioVolumeControls
-  musicSlider: {fileID: 1746137426}
-  soundEffectsSlider: {fileID: 636436497}
 --- !u!1 &762926902
 GameObject:
   m_ObjectHideFlags: 0
@@ -8531,7 +8531,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u0417\u0412\u0423\u041A\u0418"
+  m_text: SFX
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 0}
   m_sharedMaterial: {fileID: 0}
