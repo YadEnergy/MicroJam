@@ -259,6 +259,9 @@ MonoBehaviour:
   fillRenderer: {fileID: 2443513977422888642}
   fillTransform: {fileID: 3737490428351327432}
   barSize: {x: 1, y: 0.12}
+  preserveAuthoredVisuals: 0
+  authoredFullFillScale: {x: 1, y: 0.12, z: 1}
+  authoredFullFillPosition: {x: 0, y: 0, z: -0.01}
 --- !u!1 &5493990825861141337
 GameObject:
   m_ObjectHideFlags: 0
@@ -316,9 +319,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5997827630478733370}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 0.12, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.0018, y: -0.07130003, z: 0}
+  m_LocalScale: {x: 1.36847, y: 0.88462996, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 320883328711654004}
@@ -372,8 +375,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 30
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: b9510f831a308e643959fc3f8d07761a, type: 3}
-  m_Color: {r: 0.06, g: 0.07, b: 0.08, a: 0.9}
+  m_Sprite: {fileID: -1212579227134203616, guid: 5cac32e34d04ed24d8764ed49278e9c2, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.9}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

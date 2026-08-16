@@ -30,6 +30,12 @@ namespace MicroJam.Game
         [SerializeField] private Transform fillTransform;
         [SerializeField] private Vector2 barSize = new(1f, 0.12f);
 
+        [Header("Custom Visual")]
+        [Tooltip("Keeps the colors and transforms authored in the prefab. Only the fill width is changed at runtime.")]
+        [SerializeField] private bool preserveAuthoredVisuals;
+        [SerializeField] private Vector3 authoredFullFillScale = new(1f, 0.12f, 1f);
+        [SerializeField] private Vector3 authoredFullFillPosition = new(0f, 0f, -0.01f);
+
         private float visibleUntilTime;
         private bool subscribed;
 
@@ -138,13 +144,13 @@ namespace MicroJam.Game
 
         private void ApplyVisualState()
         {
-            if (backgroundRenderer != null)
+            if (!preserveAuthoredVisuals && backgroundRenderer != null)
             {
                 backgroundRenderer.color = settings != null ? settings.BackgroundColor : new Color(0.06f, 0.07f, 0.08f, 0.9f);
                 backgroundRenderer.transform.localScale = new Vector3(barSize.x, barSize.y, 1f);
             }
 
-            if (fillRenderer != null)
+            if (!preserveAuthoredVisuals && fillRenderer != null)
             {
                 fillRenderer.color = colorRole == HealthBarColorRole.Enemy
                     ? settings != null ? settings.EnemyColor : Color.red
@@ -169,9 +175,18 @@ namespace MicroJam.Game
             }
 
             float ratio = maxHealth > 0f ? Mathf.Clamp01(currentHealth / maxHealth) : 0f;
-            float fillWidth = barSize.x * ratio;
-            fillTransform.localScale = new Vector3(fillWidth, barSize.y, 1f);
-            fillTransform.localPosition = new Vector3((fillWidth - barSize.x) * 0.5f, 0f, -0.01f);
+            Vector3 fullScale = preserveAuthoredVisuals
+                ? authoredFullFillScale
+                : new Vector3(barSize.x, barSize.y, 1f);
+            Vector3 fullPosition = preserveAuthoredVisuals
+                ? authoredFullFillPosition
+                : new Vector3(0f, 0f, -0.01f);
+
+            fillTransform.localScale = new Vector3(fullScale.x * ratio, fullScale.y, fullScale.z);
+            fillTransform.localPosition = new Vector3(
+                fullPosition.x - fullScale.x * (1f - ratio) * 0.5f,
+                fullPosition.y,
+                fullPosition.z);
         }
 
         private void SetVisible(bool visible)
@@ -190,7 +205,6 @@ namespace MicroJam.Game
         private void OnValidate()
         {
             barSize = new Vector2(Mathf.Max(0.01f, barSize.x), Mathf.Max(0.01f, barSize.y));
-            ApplyVisualState();
         }
     }
 }
