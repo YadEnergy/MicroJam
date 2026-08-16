@@ -42,6 +42,7 @@ namespace MicroJam.Game
         private readonly List<Collider2D> overlapResults = new(32);
         private Coroutine respawnRoutine;
         private Coroutine invulnerabilityRoutine;
+        private bool gameHasEnded;
 
         public Health PlayerHealth => playerHealth;
         public UIPanelTween DeathOverlay => deathOverlay;
@@ -134,18 +135,34 @@ namespace MicroJam.Game
         private void OnEnable()
         {
             if (playerHealth != null) playerHealth.Died += HandlePlayerDied;
+            GameEvents.CampfireDestroyed += HandleGameEnded;
         }
 
         private void OnDisable()
         {
             if (playerHealth != null) playerHealth.Died -= HandlePlayerDied;
+            GameEvents.CampfireDestroyed -= HandleGameEnded;
             GameplayInputGate.SetBlocked(this, false);
         }
 
         private void HandlePlayerDied(DeathEvent _)
         {
-            if (IsRespawning || respawnRoutine != null) return;
+            if (gameHasEnded || IsRespawning || respawnRoutine != null) return;
             respawnRoutine = StartCoroutine(RespawnSequence());
+        }
+
+        private void HandleGameEnded()
+        {
+            gameHasEnded = true;
+            if (respawnRoutine != null) StopCoroutine(respawnRoutine);
+            if (invulnerabilityRoutine != null) StopCoroutine(invulnerabilityRoutine);
+            respawnRoutine = null;
+            invulnerabilityRoutine = null;
+            IsRespawning = false;
+            playerHealth?.SetInvulnerable(false);
+            countdownText?.rectTransform.DOKill(false);
+            deathOverlay?.SetHiddenImmediate();
+            GameplayInputGate.SetBlocked(this, false);
         }
 
         private IEnumerator RespawnSequence()

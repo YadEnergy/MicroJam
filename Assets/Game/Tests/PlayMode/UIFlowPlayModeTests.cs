@@ -29,8 +29,20 @@ namespace MicroJam.Game.Tests
             Assert.That(hotbar.StoneTowerSlot, Is.Not.Null);
             Assert.That(hotbar.transform.childCount, Is.EqualTo(4));
             RectTransform hotbarRect = hotbar.transform as RectTransform;
-            Assert.That(hotbarRect.anchorMin, Is.EqualTo(Vector2.zero));
-            Assert.That(hotbarRect.anchorMax, Is.EqualTo(Vector2.zero));
+            Assert.That(hotbarRect.anchorMin, Is.EqualTo(new Vector2(1f, 0f)));
+            Assert.That(hotbarRect.anchorMax, Is.EqualTo(new Vector2(1f, 0f)));
+            Assert.That(hotbarRect.pivot, Is.EqualTo(new Vector2(1f, 0f)));
+            Assert.That(hotbarRect.anchoredPosition, Is.EqualTo(new Vector2(-24f, 24f)));
+            RectTransform resourceHud = FindSceneObject("ResourceHUD").transform as RectTransform;
+            Assert.That(resourceHud.anchorMin, Is.EqualTo(Vector2.zero));
+            Assert.That(resourceHud.anchoredPosition, Is.EqualTo(new Vector2(24f, 24f)));
+            Assert.That(FindSceneObject("WoodIcon").GetComponent<RectTransform>().sizeDelta, Is.EqualTo(new Vector2(70f, 70f)));
+            Assert.That(FindSceneObject("StoneIcon").GetComponent<RectTransform>().sizeDelta, Is.EqualTo(new Vector2(70f, 70f)));
+            Transform deathOverlay = FindSceneObject("DeathOverlay").transform;
+            Transform pauseMenu = FindSceneObject("PauseMenu").transform;
+            Transform endedInfo = FindSceneObject("EndedInfo").transform;
+            Assert.That(deathOverlay.GetSiblingIndex(), Is.LessThan(pauseMenu.GetSiblingIndex()));
+            Assert.That(pauseMenu.GetSiblingIndex(), Is.LessThan(endedInfo.GetSiblingIndex()));
 
             foreach (CanvasScaler scaler in Object.FindObjectsByType<CanvasScaler>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             {
@@ -160,6 +172,28 @@ namespace MicroJam.Game.Tests
             Assert.That(respawn.IsRespawnPositionClear(alternate, 0.4f), Is.True);
             Object.Destroy(blocker);
             yield return null;
+            LogAssert.NoUnexpectedReceived();
+        }
+
+        [UnityTest]
+        public IEnumerator GameOverImmediatelyCancelsAndHidesAnActiveRespawnCountdown()
+        {
+            yield return Load("Game");
+            PlayerRespawnController respawn = Object.FindFirstObjectByType<PlayerRespawnController>();
+            Health health = respawn.PlayerHealth;
+            respawn.ConfigureTiming(5f, 3f);
+            Assert.That(health.TryTakeDamage(new DamageContext(health.MaxHealth + 1f, null)), Is.True);
+            yield return null;
+            Assert.That(respawn.IsRespawning, Is.True);
+            Assert.That(respawn.DeathOverlay.gameObject.activeSelf, Is.True);
+
+            GameEvents.RaiseCampfireDestroyed();
+            yield return null;
+
+            Assert.That(respawn.IsRespawning, Is.False);
+            Assert.That(respawn.DeathOverlay.gameObject.activeSelf, Is.False);
+            Assert.That(FindSceneObject("EndedInfo").activeSelf, Is.True);
+            Assert.That(Time.timeScale, Is.Zero);
             LogAssert.NoUnexpectedReceived();
         }
 

@@ -59,6 +59,19 @@ namespace MicroJam.Game.Editor
             Require(gameplayCanvas != null && gameplayCanvas.renderMode == RenderMode.ScreenSpaceOverlay &&
                     gameplayCanvas.overrideSorting && gameplayCanvas.sortingOrder >= 200,
                 "Gameplay UI Canvas must render as a top-level Screen Space Overlay.", failures);
+            RectTransform hotbarRect = hotbar != null ? hotbar.transform as RectTransform : null;
+            Require(hotbarRect != null && hotbarRect.anchorMin == new Vector2(1f, 0f) &&
+                    hotbarRect.anchorMax == new Vector2(1f, 0f) && hotbarRect.pivot == new Vector2(1f, 0f),
+                "Build toolbar must be anchored Bottom Right.", failures);
+            RectTransform resourceHud = FindNamed(game, "ResourceHUD")?.transform as RectTransform;
+            Require(resourceHud != null && resourceHud.anchorMin == Vector2.zero && resourceHud.anchorMax == Vector2.zero,
+                "Resource HUD must be anchored Bottom Left.", failures);
+            Transform death = FindNamed(game, "DeathOverlay")?.transform;
+            Transform pause = FindNamed(game, "PauseMenu")?.transform;
+            Transform ended = FindNamed(game, "EndedInfo")?.transform;
+            Require(death != null && pause != null && ended != null &&
+                    death.GetSiblingIndex() < pause.GetSiblingIndex() && pause.GetSiblingIndex() < ended.GetSiblingIndex(),
+                "Overlay priority must be Death below Pause below Game Over.", failures);
             Camera gameplayCamera = FindInScene<SquareGameplayViewport>(game)?.GetComponent<Camera>();
             Require(gameplayCamera != null && gameplayCamera.rect == new Rect(0f, 0f, 1f, 1f),
                 "Gameplay Camera must use the full 1024x1024 viewport.", failures);
@@ -104,7 +117,9 @@ namespace MicroJam.Game.Editor
             foreach (CanvasScaler scaler in FindObjectsInScene<CanvasScaler>(scene)) ConfigureScaler(scaler);
 
             RectTransform hotbarRect = hotbar.transform as RectTransform;
-            ConfigureRect(hotbarRect, Vector2.zero, Vector2.zero, Vector2.zero, new Vector2(24f, 24f), new Vector2(316f, 104f));
+            ConfigureRect(hotbarRect, new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f),
+                new Vector2(-24f, 24f), new Vector2(316f, 104f));
+            ConfigureResourceHud(scene);
             Image wall = EnsureToolbarSlot(hotbarRect, "BuildSlot1_Wall", 0, "1", "WALL", new Color(0.42f, 0.22f, 0.08f, 1f));
             Image door = EnsureToolbarSlot(hotbarRect, "BuildSlot2_Door", 1, "2", "DOOR", new Color(0.24f, 0.43f, 0.55f, 1f));
             Image bow = EnsureToolbarSlot(hotbarRect, "BuildSlot3_BowTower", 2, "3", "BOW", new Color(0.28f, 0.42f, 0.25f, 1f));
@@ -152,6 +167,11 @@ namespace MicroJam.Game.Editor
                 buildingSystem, interactions, blockedMask, deathTween, status, countdown, 10f, 3f);
 
             foreach (Button button in FindObjectsInScene<Button>(scene)) EnsureButtonTween(button);
+            GameObject endedInfo = FindNamed(scene, "EndedInfo");
+            controllersRect.SetAsLastSibling();
+            deathRoot.SetAsLastSibling();
+            pauseRoot.SetAsLastSibling();
+            if (endedInfo != null) endedInfo.transform.SetAsLastSibling();
             transition.transform.SetAsLastSibling();
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene, GameScenePath);
@@ -244,6 +264,28 @@ namespace MicroJam.Game.Editor
             text.alignment = TextAlignmentOptions.Center;
             Stretch(text.rectTransform);
             return image;
+        }
+
+        private static void ConfigureResourceHud(Scene scene)
+        {
+            GameObject resourceHud = FindNamed(scene, "ResourceHUD");
+            if (resourceHud == null) return;
+            RectTransform root = resourceHud.transform as RectTransform;
+            ConfigureRect(root, Vector2.zero, Vector2.zero, Vector2.zero, new Vector2(24f, 24f), new Vector2(152f, 104f));
+            ConfigureResourceTile(root, "WoodIcon", 0f);
+            ConfigureResourceTile(root, "StoneIcon", 82f);
+        }
+
+        private static void ConfigureResourceTile(RectTransform root, string tileName, float xPosition)
+        {
+            RectTransform tile = FindDirectChild(root, tileName)?.transform as RectTransform;
+            if (tile == null) return;
+            ConfigureRect(tile, Vector2.zero, Vector2.zero, Vector2.zero,
+                new Vector2(xPosition, 0f), new Vector2(70f, 70f));
+            TMP_Text amount = tile.GetComponentInChildren<TMP_Text>(true);
+            if (amount == null) return;
+            ConfigureRect(amount.rectTransform, new Vector2(0f, 1f), Vector2.one,
+                new Vector2(0.5f, 0f), new Vector2(0f, 6f), new Vector2(0f, 30f));
         }
 
         private static SceneTransitionController EnsureTransitionOverlay(Transform canvas)
