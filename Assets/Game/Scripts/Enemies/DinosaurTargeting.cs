@@ -8,7 +8,8 @@ namespace MicroJam.Game
         None,
         Campfire,
         BreakingBuilding,
-        ChasingPlayer
+        ChasingPlayer,
+        AttackingTower
     }
 
     [RequireComponent(typeof(Health), typeof(DinosaurMovement), typeof(DinosaurAttack))]
@@ -24,6 +25,7 @@ namespace MicroJam.Game
         private DinosaurNavigationGrid navigation;
         private Health campfireHealth;
         private Health playerHealth;
+        private Health towerHealth;
         private Health currentTarget;
         private float nextRepathTime;
         private float playerChaseExpiresAt;
@@ -32,6 +34,7 @@ namespace MicroJam.Game
         public DinosaurTargetState State { get; private set; }
         public Health CampfireHealth => campfireHealth;
         public Health RetaliatingPlayer => playerHealth;
+        public Health RetaliatingTower => towerHealth;
         public Health CurrentTarget => currentTarget;
         public float PlayerChaseFailureTimeout => playerChaseFailureTimeout;
         public DinosaurNavigationGrid Navigation => navigation;
@@ -68,6 +71,7 @@ namespace MicroJam.Game
             if (health != null) health.DamageReceived -= OnDamaged;
             if (attack != null) attack.SuccessfulAttack -= OnSuccessfulAttack;
             UnsubscribePlayerDeath();
+            UnsubscribeTowerDeath();
         }
 
         public void Initialize()
@@ -101,6 +105,24 @@ namespace MicroJam.Game
                 }
             }
 
+            if (towerHealth != null)
+            {
+                if (towerHealth.IsDead)
+                {
+                    CancelTowerAggro();
+                }
+                else
+                {
+                    bool isBreakingTowerRoute = State == DinosaurTargetState.BreakingBuilding &&
+                                                currentTarget != null && !currentTarget.IsDead;
+                    bool towerRouteChanged = plannedRevision != navigation.Revision;
+                    bool needsTowerRoute = currentTarget == null || currentTarget.IsDead ||
+                                           (!isBreakingTowerRoute && NeedsRepath()) ||
+                                           (isBreakingTowerRoute && towerRouteChanged);
+                    if (needsTowerRoute) PlanTowerRoute();
+                }
+            }
+
             // Once a wall has been selected, keep attacking it until it is destroyed.
             // Replanning the sealed route every few tenths of a second is both unnecessary
             // and very expensive when several dinosaurs surround the same base.
@@ -110,7 +132,7 @@ namespace MicroJam.Game
             bool needsCampfireRoute = currentTarget == null || currentTarget.IsDead ||
                                       (!isBreakingSelectedBuilding && NeedsRepath()) ||
                                       (isBreakingSelectedBuilding && navigationChanged);
-            if (playerHealth == null && needsCampfireRoute)
+            if (playerHealth == null && towerHealth == null && needsCampfireRoute)
             {
                 PlanCampfireRoute();
             }
@@ -142,6 +164,8 @@ namespace MicroJam.Game
             }
 
             UnsubscribePlayerDeath();
+            UnsubscribeTowerDeath();
+            towerHealth = null;
             playerHealth = player;
             playerHealth.Died += OnPlayerDied;
             currentTarget = player;
@@ -149,6 +173,25 @@ namespace MicroJam.Game
             playerChaseExpiresAt = Time.time + playerChaseFailureTimeout;
             AcceptPath(path);
             return true;
+        }
+
+        public bool TryAggroTower(Health tower)
+        {
+            if (tower == null || tower.IsDead || navigation == null || attack == null) return false;
+
+            // Keep the first living tower that provoked this dinosaur. Without this lock,
+            // alternating projectiles from nearby towers make the dinosaur constantly turn around.
+            if (towerHealth != null && !towerHealth.IsDead) return towerHealth == tower;
+
+            UnsubscribePlayerDeath();
+            playerHealth = null;
+            UnsubscribeTowerDeath();
+            towerHealth = tower;
+            towerHealth.Died += OnTowerDied;
+            currentTarget = null;
+            ForceRepath();
+            PlanTowerRoute();
+            return currentTarget != null;
         }
 
         private void PlanCampfireRoute()
@@ -165,6 +208,35 @@ namespace MicroJam.Game
             if (TryPlanFreeRoute(campfireHealth, DinosaurTargetState.Campfire)) return;
 
             if (navigation.TryFindPathToTarget(transform.position, campfireHealth, attack, movement.WaypointTolerance, true,
+                    out _, out BuildingInstance blocker) && blocker != null && blocker.Health != null && !blocker.Health.IsDead &&
+                navigation.TryFindPathToTarget(transform.position, blocker.Health, attack, movement.WaypointTolerance, false,
+                    out List<Vector2> obstaclePath, out _))
+            {
+                currentTarget = blocker.Health;
+                State = DinosaurTargetState.BreakingBuilding;
+                AcceptPath(obstaclePath);
+                return;
+            }
+
+            currentTarget = null;
+            State = DinosaurTargetState.None;
+            movement.ClearPath();
+            ScheduleRepath();
+        }
+
+        private void PlanTowerRoute()
+        {
+            if (towerHealth == null || towerHealth.IsDead)
+            {
+                CancelTowerAggro();
+                return;
+            }
+
+            if (TryPlanFreeRoute(towerHealth, DinosaurTargetState.AttackingTower)) return;
+
+            // A retaliated tower can be behind walls, doors, or other towers. Break the first
+            // obstruction, then resume the route to the originally locked tower.
+            if (navigation.TryFindPathToTarget(transform.position, towerHealth, attack, movement.WaypointTolerance, true,
                     out _, out BuildingInstance blocker) && blocker != null && blocker.Health != null && !blocker.Health.IsDead &&
                 navigation.TryFindPathToTarget(transform.position, blocker.Health, attack, movement.WaypointTolerance, false,
                     out List<Vector2> obstaclePath, out _))
@@ -217,12 +289,28 @@ namespace MicroJam.Game
             PlanCampfireRoute();
         }
 
+        private void CancelTowerAggro()
+        {
+            UnsubscribeTowerDeath();
+            towerHealth = null;
+            currentTarget = null;
+            ForceRepath();
+            PlanCampfireRoute();
+        }
+
         private void OnDamaged(DamageReceivedEvent damage)
         {
             if (damage.Source == null) return;
             PlayerCombat combat = damage.Source.GetComponentInParent<PlayerCombat>();
             Health player = combat != null ? combat.GetComponent<Health>() : null;
-            if (player != null) TryAggroPlayer(player);
+            if (player != null)
+            {
+                TryAggroPlayer(player);
+                return;
+            }
+
+            TowerCombat tower = damage.Source.GetComponentInParent<TowerCombat>();
+            if (tower != null) TryAggroTower(tower.Health);
         }
 
         private void OnSuccessfulAttack(Health attacked)
@@ -234,10 +322,16 @@ namespace MicroJam.Game
         }
 
         private void OnPlayerDied(DeathEvent _) => CancelPlayerAggro();
+        private void OnTowerDied(DeathEvent _) => CancelTowerAggro();
 
         private void UnsubscribePlayerDeath()
         {
             if (playerHealth != null) playerHealth.Died -= OnPlayerDied;
+        }
+
+        private void UnsubscribeTowerDeath()
+        {
+            if (towerHealth != null) towerHealth.Died -= OnTowerDied;
         }
 
         private void FindCampfire()
@@ -258,7 +352,8 @@ namespace MicroJam.Game
             if (!showPathGizmos || movement == null) return;
             IReadOnlyList<Vector2> path = movement.CurrentPath;
             Gizmos.color = State == DinosaurTargetState.BreakingBuilding ? Color.red :
-                State == DinosaurTargetState.ChasingPlayer ? Color.yellow : Color.cyan;
+                State == DinosaurTargetState.ChasingPlayer ? Color.yellow :
+                State == DinosaurTargetState.AttackingTower ? Color.magenta : Color.cyan;
             Vector3 previous = transform.position;
             for (int i = 0; i < path.Count; i++)
             {
