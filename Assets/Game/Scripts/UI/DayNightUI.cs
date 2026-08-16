@@ -9,8 +9,6 @@ namespace MicroJam.Game
         [SerializeField] private TMP_Text textLabel;
         [SerializeField] private RectTransform progressMarker;
 
-        private const float MarkerTravel = 168f;
-
         private void Awake()
         {
             textLabel ??= GetComponent<TMP_Text>();
@@ -25,9 +23,13 @@ namespace MicroJam.Game
         {
             if (dayNightCycle != null && progressMarker != null)
             {
-                Vector2 position = progressMarker.anchoredPosition;
-                position.x = Mathf.Lerp(-MarkerTravel, MarkerTravel, dayNightCycle.DayProgress01);
-                progressMarker.anchoredPosition = position;
+                float progress = dayNightCycle.DayProgress01;
+                Vector2 anchorMin = progressMarker.anchorMin;
+                Vector2 anchorMax = progressMarker.anchorMax;
+                anchorMin.x = progress;
+                anchorMax.x = progress;
+                progressMarker.anchorMin = anchorMin;
+                progressMarker.anchorMax = anchorMax;
             }
         }
     }

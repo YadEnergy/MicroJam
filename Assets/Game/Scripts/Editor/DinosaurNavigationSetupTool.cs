@@ -201,7 +201,7 @@ namespace MicroJam.Game.Editor
         private static void ConfigureScaler(CanvasScaler scaler)
         {
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1024f, 1024f);
+            scaler.referenceResolution = new Vector2(683f, 683f);
             scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
             scaler.matchWidthOrHeight = 0.5f;
         }

@@ -173,7 +173,7 @@ namespace MicroJam.Game.Editor
             canvas.sortingOrder = 100;
             CanvasScaler scaler = GetOrAdd<CanvasScaler>(interactionRoot);
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1024f, 1024f);
+            scaler.referenceResolution = new Vector2(683f, 683f);
             scaler.matchWidthOrHeight = 0.5f;
             GetOrAdd<GraphicRaycaster>(interactionRoot);
 

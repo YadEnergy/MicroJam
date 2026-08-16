@@ -334,6 +334,15 @@ namespace MicroJam.Game.Tests
             AssertResponsiveScaler(hudScaler);
             AssertResponsiveScaler(interactionScaler);
             AssertRect(game.transform.Find("UI/Canvas/DayNightUI/DayNightText").GetComponent<RectTransform>(), new Vector2(0f, 1f));
+            RectTransform dayNightBar = game.transform.Find("UI/Canvas/DayNightUI/DayNightBar").GetComponent<RectTransform>();
+            RectTransform markerZone = dayNightBar.Find("MarkerZone").GetComponent<RectTransform>();
+            RectTransform progressMarker = markerZone.Find("ProgressMarker").GetComponent<RectTransform>();
+            Assert.That(dayNightBar.anchorMin, Is.EqualTo(new Vector2(0f, 1f)));
+            Assert.That(dayNightBar.anchorMax, Is.EqualTo(new Vector2(0f, 1f)));
+            Assert.That(markerZone.anchorMin.x, Is.EqualTo(1f / 6f).Within(0.001f));
+            Assert.That(markerZone.anchorMax.x, Is.EqualTo(5f / 6f).Within(0.001f));
+            Assert.That(progressMarker.anchorMin.x, Is.InRange(0f, 1f));
+            Assert.That(progressMarker.anchorMax.x, Is.EqualTo(progressMarker.anchorMin.x).Within(0.001f));
             AssertRect(game.transform.Find("UI/Canvas/WaveInfo/WaveInfoText").GetComponent<RectTransform>(), new Vector2(0.5f, 1f));
             AssertRect(game.transform.Find("UI/Canvas/PointsInfo/PointsInfoUI").GetComponent<RectTransform>(), new Vector2(1f, 1f));
             AssertRect(game.transform.Find("UI/WorldInteraction/BuildingPopup").GetComponent<RectTransform>(), new Vector2(0.5f, 0.5f));
@@ -521,7 +530,7 @@ namespace MicroJam.Game.Tests
         {
             Assert.That(scaler, Is.Not.Null);
             Assert.That(scaler.uiScaleMode, Is.EqualTo(CanvasScaler.ScaleMode.ScaleWithScreenSize));
-            Assert.That(scaler.referenceResolution, Is.EqualTo(new Vector2(1024f, 1024f)));
+            Assert.That(scaler.referenceResolution, Is.EqualTo(new Vector2(683f, 683f)));
             Assert.That(scaler.matchWidthOrHeight, Is.EqualTo(0.5f).Within(0.001f));
         }
 

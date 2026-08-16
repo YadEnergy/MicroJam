@@ -47,14 +47,24 @@ namespace MicroJam.Game.Tests
             foreach (CanvasScaler scaler in Object.FindObjectsByType<CanvasScaler>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             {
                 Assert.That(scaler.uiScaleMode, Is.EqualTo(CanvasScaler.ScaleMode.ScaleWithScreenSize));
-                Assert.That(scaler.referenceResolution, Is.EqualTo(new Vector2(1024f, 1024f)));
+                Assert.That(scaler.referenceResolution, Is.EqualTo(new Vector2(683f, 683f)));
                 Assert.That(scaler.matchWidthOrHeight, Is.EqualTo(0.5f).Within(0.001f));
             }
 
             Canvas toolbarCanvas = hotbar.GetComponentInParent<Canvas>();
-            Assert.That(toolbarCanvas.renderMode, Is.EqualTo(RenderMode.ScreenSpaceOverlay));
+            Camera gameplayCamera = Object.FindFirstObjectByType<SquareGameplayViewport>().GetComponent<Camera>();
+            Assert.That(toolbarCanvas.renderMode, Is.EqualTo(RenderMode.ScreenSpaceCamera));
+            Assert.That(toolbarCanvas.worldCamera, Is.SameAs(gameplayCamera));
             Assert.That(toolbarCanvas.overrideSorting, Is.True);
             Assert.That(toolbarCanvas.sortingOrder, Is.GreaterThanOrEqualTo(200));
+
+            RectTransform canvasRect = toolbarCanvas.transform as RectTransform;
+            AssertInsideCanvas(canvasRect, FindSceneObject("DayNightBar").transform as RectTransform);
+            AssertInsideCanvas(canvasRect, FindSceneObject("WaveInfoText").transform as RectTransform);
+            AssertInsideCanvas(canvasRect, FindSceneObject("PointsInfoUI").transform as RectTransform);
+            AssertInsideCanvas(canvasRect, resourceHud);
+            AssertInsideCanvas(canvasRect, hotbarRect);
+            AssertInsideCanvas(canvasRect, FindSceneObject("TutorialPanel").transform as RectTransform);
 
             Image[] slots = { hotbar.WallSlot, hotbar.DoorSlot, hotbar.BowTowerSlot, hotbar.StoneTowerSlot };
             BuildSelection[] selections = { BuildSelection.Wall, BuildSelection.Door, BuildSelection.BowTower, BuildSelection.StoneTower };
@@ -231,6 +241,19 @@ namespace MicroJam.Game.Tests
                 .FirstOrDefault(candidate => candidate.gameObject.scene == SceneManager.GetActiveScene() &&
                                              candidate.name == objectName)
                 ?.gameObject;
+        }
+
+        private static void AssertInsideCanvas(RectTransform canvas, RectTransform target)
+        {
+            Assert.That(canvas, Is.Not.Null);
+            Assert.That(target, Is.Not.Null);
+            Bounds bounds = RectTransformUtility.CalculateRelativeRectTransformBounds(canvas, target);
+            Rect rect = canvas.rect;
+            const float tolerance = 0.1f;
+            Assert.That(bounds.min.x, Is.GreaterThanOrEqualTo(rect.xMin - tolerance), $"{target.name} extends past the left edge.");
+            Assert.That(bounds.max.x, Is.LessThanOrEqualTo(rect.xMax + tolerance), $"{target.name} extends past the right edge.");
+            Assert.That(bounds.min.y, Is.GreaterThanOrEqualTo(rect.yMin - tolerance), $"{target.name} extends past the bottom edge.");
+            Assert.That(bounds.max.y, Is.LessThanOrEqualTo(rect.yMax + tolerance), $"{target.name} extends past the top edge.");
         }
     }
 }

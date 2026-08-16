@@ -19,6 +19,7 @@ namespace MicroJam.Game.Editor
         public const string MainMenuScenePath = "Assets/Game/Scenes/SampleScene.unity";
         private const string InputActionsPath = "Assets/InputSystem_Actions.inputactions";
         private static readonly Vector2 ReferenceResolution = new(1024f, 1024f);
+        private static readonly Vector2 GameplayReferenceResolution = new(683f, 683f);
 
         [MenuItem("Tools/MicroJam/UI Flow/Apply Scene-Bound UI")]
         public static void ApplyFromMenu() => Apply(true);
@@ -80,7 +81,7 @@ namespace MicroJam.Game.Editor
             Require(gameTransition != null && Mathf.Approximately(gameTransition.alpha, 0f) && !gameTransition.blocksRaycasts,
                 "Gameplay transition overlay must remain transparent and editable outside Play Mode.", failures);
             Require(FindNamed(game, "BuildSlot4_StoneTower") != null, "Stone Tower toolbar slot is missing.", failures);
-            Require(FindObjectsInScene<CanvasScaler>(game).All(IsResponsiveScaler), "A gameplay CanvasScaler is not standardized.", failures);
+            Require(FindObjectsInScene<CanvasScaler>(game).All(scaler => IsResponsiveScaler(scaler, GameplayReferenceResolution)), "A gameplay CanvasScaler is not standardized.", failures);
 
             Scene menu = EditorSceneManager.OpenScene(MainMenuScenePath, OpenSceneMode.Single);
             Require(FindInScene<MainMenuController>(menu) != null, "Main Menu controller is missing.", failures);
@@ -93,7 +94,7 @@ namespace MicroJam.Game.Editor
             Require(menuTransition != null && Mathf.Approximately(menuTransition.alpha, 0f) && !menuTransition.blocksRaycasts,
                 "Main Menu transition overlay must remain transparent and editable outside Play Mode.", failures);
             Require(FindInScene<EventSystem>(menu) != null, "Main Menu EventSystem is missing.", failures);
-            Require(FindObjectsInScene<CanvasScaler>(menu).All(IsResponsiveScaler), "Main Menu CanvasScaler is not responsive.", failures);
+            Require(FindObjectsInScene<CanvasScaler>(menu).All(scaler => IsResponsiveScaler(scaler, ReferenceResolution)), "Main Menu CanvasScaler is not responsive.", failures);
 
             if (failures.Count > 0) throw new InvalidOperationException(string.Join("\n", failures));
             Debug.Log("UI flow scene validation passed.");
@@ -117,7 +118,7 @@ namespace MicroJam.Game.Editor
             ConfigureGameplayCanvas(canvas, gameplayCamera, 200);
             Canvas interactionCanvas = interactions.GetComponentInParent<Canvas>();
             if (interactionCanvas != null && interactionCanvas != canvas) ConfigureGameplayCanvas(interactionCanvas, gameplayCamera, 100);
-            foreach (CanvasScaler scaler in FindObjectsInScene<CanvasScaler>(scene)) ConfigureScaler(scaler);
+            foreach (CanvasScaler scaler in FindObjectsInScene<CanvasScaler>(scene)) ConfigureScaler(scaler, GameplayReferenceResolution);
 
             RectTransform hotbarRect = hotbar.transform as RectTransform;
             ConfigureRect(hotbarRect, new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f),
@@ -191,7 +192,7 @@ namespace MicroJam.Game.Editor
             Canvas canvas = canvasObject.GetComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             canvas.sortingOrder = 0;
-            ConfigureScaler(canvasObject.GetComponent<CanvasScaler>());
+            ConfigureScaler(canvasObject.GetComponent<CanvasScaler>(), ReferenceResolution);
 
             RectTransform root = EnsureRectChild(canvasObject.transform as RectTransform, "MainMenuRoot");
             Stretch(root);
@@ -412,10 +413,10 @@ namespace MicroJam.Game.Editor
             else scenes.Add(new EditorBuildSettingsScene(path, true));
         }
 
-        private static void ConfigureScaler(CanvasScaler scaler)
+        private static void ConfigureScaler(CanvasScaler scaler, Vector2 referenceResolution)
         {
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = ReferenceResolution;
+            scaler.referenceResolution = referenceResolution;
             scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
             scaler.matchWidthOrHeight = 0.5f;
         }
@@ -429,9 +430,9 @@ namespace MicroJam.Game.Editor
             canvas.sortingOrder = sortingOrder;
         }
 
-        private static bool IsResponsiveScaler(CanvasScaler scaler) => scaler != null &&
+        private static bool IsResponsiveScaler(CanvasScaler scaler, Vector2 referenceResolution) => scaler != null &&
             scaler.uiScaleMode == CanvasScaler.ScaleMode.ScaleWithScreenSize &&
-            scaler.referenceResolution == ReferenceResolution && Mathf.Approximately(scaler.matchWidthOrHeight, 0.5f);
+            scaler.referenceResolution == referenceResolution && Mathf.Approximately(scaler.matchWidthOrHeight, 0.5f);
 
         private static RectTransform EnsureRectChild(RectTransform parent, string name)
         {
