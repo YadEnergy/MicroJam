@@ -389,8 +389,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1d3815bc1e50e84090e5dd0b62edc84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.Health
-  maxHealth: 50
-  currentHealth: 50
+  maxHealth: 100
+  currentHealth: 100
   initializeAtMaxOnAwake: 1
 --- !u!114 &3839749693550087077
 MonoBehaviour:

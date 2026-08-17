@@ -232,8 +232,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1d3815bc1e50e84090e5dd0b62edc84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.Health
-  maxHealth: 50
-  currentHealth: 50
+  maxHealth: 250
+  currentHealth: 250
   initializeAtMaxOnAwake: 1
 --- !u!114 &3124992359798026005
 MonoBehaviour:
@@ -249,7 +249,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.ResourceNode
   nodeType: 1
   health: {fileID: 5241006951298520275}
-  resourcePerSuccessfulHit: 1
+  resourcePerSuccessfulHit: 2
   healPercentPerSuccessfulHit: 0.1
 --- !u!1 &4786361183661297411
 GameObject:

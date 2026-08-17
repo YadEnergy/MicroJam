@@ -309,8 +309,8 @@ MonoBehaviour:
   projectileSpawnPoint: {fileID: 808629752706805935}
   projectilePrefab: {fileID: 8562879782622324687, guid: ce0e617449f45ff4ebc4cbb98754bc3c, type: 3}
   attackRange: 30
-  attackDamage: 5
-  attackCooldown: 0.5
+  attackDamage: 15
+  attackCooldown: 1.5
   projectileSpeed: 20
   showRangeGizmo: 0
   showTargetGizmo: 0
