@@ -15,8 +15,8 @@ MonoBehaviour:
   buildingType: 2
   displayName: Bow Tower
   prefab: {fileID: 5787618068476322970, guid: d25b772132d75074f929374664b4ad48, type: 3}
-  woodCost: 20
-  stoneCost: 10
+  woodCost: 40
+  stoneCost: 20
   footprintSize: {x: 2, y: 2}
   blocksPlayer: 1
   blocksDinosaur: 1

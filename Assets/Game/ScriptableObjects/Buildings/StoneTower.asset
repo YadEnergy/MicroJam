@@ -15,8 +15,8 @@ MonoBehaviour:
   buildingType: 3
   displayName: Stone Tower
   prefab: {fileID: 7267734358082769289, guid: 0161807710009d64fa58dfa5597e5214, type: 3}
-  woodCost: 10
-  stoneCost: 20
+  woodCost: 20
+  stoneCost: 40
   footprintSize: {x: 2, y: 2}
   blocksPlayer: 1
   blocksDinosaur: 1

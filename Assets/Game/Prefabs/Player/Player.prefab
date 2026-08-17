@@ -431,11 +431,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eb34fceafe1bc344b60c83f4fd7d8b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.PlayerResourceWallet
-  startingWood: 500
-  startingStone: 20
+  startingWood: 100
+  startingStone: 50
   initializeOnAwake: 1
-  wood: 20
-  stone: 20
+  wood: 100
+  stone: 50
 --- !u!114 &3874712706895021106
 MonoBehaviour:
   m_ObjectHideFlags: 0
