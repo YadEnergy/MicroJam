@@ -42,8 +42,7 @@ namespace MicroJam.Game
 
             foreach (SpriteRenderer renderer in renderers)
             {
-                if (renderer == null || renderer.GetComponent<SpriteShapeShadow>() != null ||
-                    renderer.GetComponentInParent<HealthBar>() != null ||
+                if (renderer == null || renderer.GetComponentInParent<HealthBar>() != null ||
                     renderer.name.Contains("Shadow AO"))
                 {
                     continue;
@@ -52,9 +51,24 @@ namespace MicroJam.Game
                 Transform owner = FindSupportedOwner(renderer.transform);
                 if (owner == null) continue;
 
+                SpriteShapeShadow existingShadow = renderer.GetComponent<SpriteShapeShadow>();
+                if (!ShouldCreateShadow(renderer))
+                {
+                    if (existingShadow != null) Destroy(existingShadow);
+                    continue;
+                }
+
+                if (existingShadow != null) continue;
+
                 SpriteShapeShadow shadow = renderer.gameObject.AddComponent<SpriteShapeShadow>();
                 shadow.Configure(renderer, softShadowMaterial, opacity, verticalOffset, scaleMultiplier);
             }
+        }
+
+        private static bool ShouldCreateShadow(SpriteRenderer renderer)
+        {
+            CampfireInteraction campfire = renderer.GetComponentInParent<CampfireInteraction>();
+            return campfire == null;
         }
 
         private static Transform FindSupportedOwner(Transform child)
@@ -110,6 +124,11 @@ namespace MicroJam.Game
             }
 
             SyncShadow();
+        }
+
+        private void OnDestroy()
+        {
+            if (shadow != null) Destroy(shadow.gameObject);
         }
 
         private void CreateShadow()
