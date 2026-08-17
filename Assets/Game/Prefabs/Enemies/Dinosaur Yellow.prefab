@@ -502,8 +502,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1d3815bc1e50e84090e5dd0b62edc84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.Health
-  maxHealth: 30
-  currentHealth: 3
+  maxHealth: 100
+  currentHealth: 100
   initializeAtMaxOnAwake: 1
 --- !u!114 &3988364512398765412
 MonoBehaviour:
@@ -521,7 +521,7 @@ MonoBehaviour:
   movement: {fileID: 5990775089936957884}
   attack: {fileID: 7368752122449935101}
   targeting: {fileID: 4011219103371351612}
-  spawnCost: 1
+  spawnCost: 2
 --- !u!114 &5990775089936957884
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -560,7 +560,7 @@ MonoBehaviour:
   attackFeedback: {fileID: 8300000000000000006}
   attackRange: 1.5
   rangeTolerance: 0.05
-  attackDamage: 1
+  attackDamage: 10
   attackCooldown: 1
   feedbackDuration: 0.1
 --- !u!114 &4011219103371351612
