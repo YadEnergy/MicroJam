@@ -3597,9 +3597,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc462f5ee47d4089b018cb9e2fafc63d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: MicroJam.Game::MicroJam.Game.WorldSpriteShadowInstaller
-  opacity: 0.3
+  opacity: 0.45
   verticalOffset: 0.09
   scaleMultiplier: 1.3
+  playerVerticalOffset: 0.12
+  playerScaleMultiplier: 1.5
   edgeBlur: 1.5
   rescanInterval: 0.5
   softShadowShader: {fileID: 4800000, guid: f5e60860e40e48dcb2592c043694e6b9, type: 3}

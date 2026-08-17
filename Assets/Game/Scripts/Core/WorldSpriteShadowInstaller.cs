@@ -7,6 +7,8 @@ namespace MicroJam.Game
         [SerializeField, Range(0f, 1f)] private float opacity = 0.3f;
         [SerializeField, Min(0f)] private float verticalOffset = 0.09f;
         [SerializeField, Min(1f)] private float scaleMultiplier = 1.04f;
+        [SerializeField, Min(0f)] private float playerVerticalOffset = 0.14f;
+        [SerializeField, Min(1f)] private float playerScaleMultiplier = 1.55f;
         [SerializeField, Range(0f, 4f)] private float edgeBlur = 1.5f;
         [SerializeField, Min(0.1f)] private float rescanInterval = 0.5f;
         [SerializeField] private Shader softShadowShader;
@@ -58,17 +60,26 @@ namespace MicroJam.Game
                     continue;
                 }
 
-                if (existingShadow != null) continue;
-
-                SpriteShapeShadow shadow = renderer.gameObject.AddComponent<SpriteShapeShadow>();
-                shadow.Configure(renderer, softShadowMaterial, opacity, verticalOffset, scaleMultiplier);
+                bool isPlayer = renderer.GetComponentInParent<PlayerMovement>() != null;
+                SpriteShapeShadow shadow = existingShadow != null
+                    ? existingShadow
+                    : renderer.gameObject.AddComponent<SpriteShapeShadow>();
+                shadow.Configure(
+                    renderer,
+                    softShadowMaterial,
+                    opacity,
+                    isPlayer ? playerVerticalOffset : verticalOffset,
+                    isPlayer ? playerScaleMultiplier : scaleMultiplier);
             }
         }
 
         private static bool ShouldCreateShadow(SpriteRenderer renderer)
         {
             CampfireInteraction campfire = renderer.GetComponentInParent<CampfireInteraction>();
-            return campfire == null;
+            if (campfire != null) return false;
+
+            PlayerMovement player = renderer.GetComponentInParent<PlayerMovement>();
+            return player == null || renderer.name == "Visual";
         }
 
         private static Transform FindSupportedOwner(Transform child)
@@ -90,6 +101,8 @@ namespace MicroJam.Game
             opacity = Mathf.Clamp01(opacity);
             verticalOffset = Mathf.Max(0f, verticalOffset);
             scaleMultiplier = Mathf.Max(1f, scaleMultiplier);
+            playerVerticalOffset = Mathf.Max(0f, playerVerticalOffset);
+            playerScaleMultiplier = Mathf.Max(1f, playerScaleMultiplier);
             edgeBlur = Mathf.Clamp(edgeBlur, 0f, 4f);
             rescanInterval = Mathf.Max(0.1f, rescanInterval);
         }
@@ -109,7 +122,7 @@ namespace MicroJam.Game
             opacity = configuredOpacity;
             verticalOffset = offset;
             scaleMultiplier = scale;
-            CreateShadow();
+            if (shadow == null) CreateShadow();
             if (shadowMaterial != null) shadow.sharedMaterial = shadowMaterial;
             SyncShadow();
         }
